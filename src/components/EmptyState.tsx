@@ -6,7 +6,7 @@ import { useAppTheme } from "@/utils/useAppTheme"
 import type { ThemedStyle } from "@/theme"
 import { translate } from "@/i18n/translate"
 
-const sadFace = require("../../assets/images/sad-face.png")
+const solitudeLand = require("../../assets/images/emptyPage-ChatGPT.png");
 
 interface EmptyStateProps {
   /**
@@ -124,10 +124,10 @@ export function EmptyState(props: EmptyStateProps) {
 
   const EmptyStatePresets = {
     generic: {
-      imageSource: sadFace,
+      imageSource: solitudeLand,
       heading: translate("emptyStateComponent:generic.heading"),
       content: translate("emptyStateComponent:generic.content"),
-      button: translate("emptyStateComponent:generic.button"),
+      // button: translate("emptyStateComponent:generic.button"),
     } as EmptyStatePresetItem,
   } as const
 
@@ -189,8 +189,8 @@ export function EmptyState(props: EmptyStateProps) {
     ButtonProps?.style,
   ]
 
-  return (
-    <View style={$containerStyles}>
+  return ( // alignItems center 추가
+    <View style={{...$containerStyles, alignItems : 'center'}}>
       {isImagePresent && (
         <Image
           source={imageSource}

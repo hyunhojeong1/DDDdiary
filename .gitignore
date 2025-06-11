@@ -90,3 +90,8 @@ web-build/
 
 # Yarn
 .yarn/*
+
+# FirebaseFunctions
+/functions
+google-services.json
+GoogleService-Info.plist

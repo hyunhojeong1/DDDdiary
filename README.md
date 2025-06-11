@@ -1,3 +1,7 @@
+# DDDdiary uses the Ignite boilerplate by Infinite Red Team. (thank you!)
+# Below is the README Content authored by the Infinite Red Team.
+
+
 # Welcome to your new ignited app!
 
 > The latest and greatest boilerplate for Infinite Red opinions

@@ -8,6 +8,7 @@ const palette = {
   neutral300: "#3C3836",
   neutral200: "#191015",
   neutral100: "#000000",
+  neutral150: "#0C0A0C",
 
   primary600: "#F4E0D9",
   primary500: "#E8C1B4",
@@ -31,6 +32,8 @@ const palette = {
   angry100: "#F2D6CD",
   angry500: "#C03403",
 
+  delight100 : "#0077FF",
+
   overlay20: "rgba(25, 16, 21, 0.2)",
   overlay50: "rgba(25, 16, 21, 0.5)",
 } as const
@@ -47,4 +50,5 @@ export const colors = {
   separator: palette.neutral300,
   error: palette.angry500,
   errorBackground: palette.angry100,
+  tabBackground : palette.neutral100,
 } as const

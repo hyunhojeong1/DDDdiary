@@ -255,7 +255,7 @@ const $inputWrapperStyle: ThemedStyle<ViewStyle> = ({ colors }) => ({
   overflow: "hidden",
 })
 
-const $inputStyle: ThemedStyle<ViewStyle> = ({ colors, typography, spacing }) => ({
+const $inputStyle: ThemedStyle<TextStyle> = ({ colors, typography, spacing }) => ({ // viewstyle이길래 바꿈
   flex: 1,
   alignSelf: "stretch",
   fontFamily: typography.primary.normal,
