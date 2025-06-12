@@ -268,7 +268,7 @@ const zh: Translations = {
     explain6: "昵称：dolko\n负责人邮箱：jhhdy1@naver.com",
     button6: "喜欢这个App吗？点个赞吧！",
     invalidFFRequest1 : "发生错误。",
-    invalidFFRequest2 : "如果此问题持续存在，请更改（重置）你的昵称。",
+    invalidFFRequest2 : "如果此问题持续存在，请重新启动应用程序或更改（重置）你的昵称。",
   },
   errorScreen: {
     title: "哎呀..! 出现了一些错误ㅠ.ㅠ",

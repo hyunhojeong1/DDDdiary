@@ -266,7 +266,7 @@ const es: Translations = {
     explain6: "Apodo: dolko\nCorreo: jhhdy1@naver.com",
     button6: "¡Me gusta la app! Enviar apoyo",
     invalidFFRequest1 : "Se produjo un error.",
-    invalidFFRequest2 : "Si este problema persiste, por favor cambia (restablece) tu apodo.",
+    invalidFFRequest2 : "Si este problema persiste, por favor reinicia la aplicación o cambia(restablece) tu apodo.",
   },
   errorScreen: {
     title: "¡Uy..! Algo salió mal ㅠ.ㅠ",

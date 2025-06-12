@@ -268,7 +268,7 @@ const ja: Translations = {
     explain6: "ニックネーム：dolko\n連絡先メール：jhhdy1@naver.com",
     button6: "このアプリ好き！応援メッセージを送る",
     invalidFFRequest1 : "エラーが発生しました。",
-    invalidFFRequest2 : "この問題が継続する場合は、ニックネームを変更（リセット）してください。",
+    invalidFFRequest2 : "この問題が続く場合は、アプリを再起動するか、ニックネームを変更（リセット）してください。",
   },
   errorScreen: {
     title: "あっ..! 何かがうまくいきませんでしたㅠ.ㅠ",

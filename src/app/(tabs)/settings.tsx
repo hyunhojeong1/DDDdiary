@@ -86,7 +86,7 @@ export default observer(function Settings() {
       myStatusStore.saveMyStatus();
     } else {
       setIsToggled(true);
-      Alert.alert(t('settingScreen:alarmYetSaving1'), t('settingScreen:alarmYetSaving2'));
+      Alert.alert(t('settingScreen:invalidFFRequest1'), t('settingScreen:invalidFFRequest2'));
     }
   };
 
@@ -121,7 +121,7 @@ export default observer(function Settings() {
             const crashlytics = getCrashlytics();
             log(crashlytics, 'resetNickname Error');
             recordError(crashlytics, e as Error);
-            Alert.alert(t('settingScreen:invalidFFRequest1'), t('settingScreen:invalidFFRequest2'));
+            Alert.alert(t('common:errorHappened'), t('common:tryAgain'));
           }
         }},
     ]);

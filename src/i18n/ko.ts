@@ -268,7 +268,7 @@ const ko: Translations = {
     explain6 : "닉네임: dolko\n담당자 메일: jhhdy1@naver.com",
     button6 : "앱 좋아요! 응원 보내기",
     invalidFFRequest1 : "오류 발생",
-    invalidFFRequest2 : "이 문제가 계속되는 경우 닉네임 변경(초기화) 해주세요.",
+    invalidFFRequest2 : "이 문제가 계속되는 경우 앱을 재시작하거나, 닉네임 변경(초기화) 해주세요.",
   },
   errorScreen: {
     title: "헛..! 뭔가가 잘못되었습니다ㅠ.ㅠ",

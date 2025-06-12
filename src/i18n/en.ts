@@ -265,7 +265,7 @@ const en = {
     explain6: "Nickname: dolko\nContact Email: jhhdy1@naver.com",
     button6: "Love the app! Send Like!",
     invalidFFRequest1 : "An error occurred.",
-    invalidFFRequest2 : "If this issue persists, please change (reset) your nickname.",
+    invalidFFRequest2 : "If this issue persists, please restart the app or change(reset) your nickname.",
   },
   errorScreen: {
     title: "Oops..! Something went wrongㅠ.ㅠ",
