@@ -26,6 +26,7 @@ if (__DEV__) {
   // include this in our production bundle, so we are using `if (__DEV__)`
   // to only execute this in development.
   require("src/devtools/ReactotronConfig.ts")
+  console.log("__DEV__ :", __DEV__);
 }
 
 const app = getApp();
