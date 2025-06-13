@@ -9,6 +9,8 @@ import { ViewStyle, AppState } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Octicons from '@expo/vector-icons/Octicons';
 import { getMessaging } from '@react-native-firebase/messaging';
+import * as Notifications from 'expo-notifications';
+
 
 let isListenerRegistered = false;
 const messaging = getMessaging();
@@ -53,6 +55,7 @@ export default function TabLayout() {
     const subscription = AppState.addEventListener("change", (state)=>{
       if(state === "active") {
         checkIfNewDay();
+        Notifications.setBadgeCountAsync(0);
       }
     });
     return () => {
