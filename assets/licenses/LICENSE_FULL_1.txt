@@ -160,11 +160,6 @@ ignite-cli (used for initial project generation): 10.3.0 : {
     "repository": "https://github.com/expo/expo",
     "publisher": "650 Industries, Inc.",
 },
-"expo-location": "~18.0.10" : {
-    "licenses": "MIT",
-    "repository": "https://github.com/expo/expo",
-    "publisher": "650 Industries, Inc.",
-},
 "expo-notifications": "^0.29.14" : {
     "licenses": "MIT",
     "repository": "https://github.com/expo/expo",

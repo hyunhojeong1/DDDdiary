@@ -152,12 +152,6 @@
           }
         }
       ],
-      [
-        "expo-location",
-        {
-          "locationAlwaysAndWhenInUsePermission": "Allow DDDdiary to use your location."
-        }
-      ],
       "expo-router"
     ],
     "experiments": {

@@ -3101,6 +3101,11 @@
         "repository": "https://github.com/expo/expo",
         "publisher": "650 Industries, Inc."
     },
+    "expo-location": "~18.0.10" : {
+        "licenses": "MIT",
+        "repository": "https://github.com/expo/expo",
+        "publisher": "650 Industries, Inc.",
+    },
     "expo-keep-awake@14.0.3": {
         "licenses": "MIT",
         "repository": "https://github.com/expo/expo",
