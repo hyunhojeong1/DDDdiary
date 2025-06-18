@@ -93,3 +93,5 @@ web-build/
 
 # FirebaseFunctions
 /functions
+google-services.json
+GoogleService-Info.plist
