@@ -102,7 +102,7 @@ export default observer(function TodayWrite() {
       const booly = await myStatusStore.saveTodayDiary(alarms, shareCheck);
       if(booly) {
         setIsSaved(true);
-        myStatusStore.modelOneDiary(fulldate, contents);
+        await myStatusStore.modelAndSaveOneDiary(fulldate, contents);
         myStatusStore.setProp("todayProcess", true);
       } else {
         setIsSaved(true);

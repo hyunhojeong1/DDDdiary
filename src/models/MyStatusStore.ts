@@ -188,9 +188,7 @@ export const MyStatusStoreModel = types
         });
         if(resultBooly.data) {
           store.setProp("todayAlarmLastTopic", [...needReserveTopics, ...newAddTopics]);
-          const response = await save("myStatus", store);
-          if(response) { return true; }
-          else { return false; }
+          return true;
         } else {
           return false;
         }
@@ -385,6 +383,10 @@ export const MyStatusStoreModel = types
         log(crashlytics, 'Firebase - resetInitialReady Error');
         recordError(crashlytics, e as Error);
       }
+    },
+    async modelAndSaveOneDiary(fulldate : number, contents : object) { // 일기 수정 저장오류 개선
+      store.myDiaries.set(fulldate.toString(), contents);
+      await save("myStatus", store);
     },
   }))
 
