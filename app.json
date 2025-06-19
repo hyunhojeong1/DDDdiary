@@ -5,7 +5,7 @@
     "name": "DDDdiary",
     "slug": "DDDdiary",
     "scheme": "ddddiary",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "icon": "./assets/images/app-mainIcon-all.png",
@@ -40,7 +40,7 @@
       "entitlements": {
         "aps-environment": "production"
       },
-      "buildNumber": "1"
+      "buildNumber": "2"
     },
     "web": {
       "favicon": "./assets/images/notification_icon.png",
