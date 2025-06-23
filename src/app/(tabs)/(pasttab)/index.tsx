@@ -93,10 +93,12 @@ export default observer(function PastDiary() {
               />
             </View> 
             : 
-            <Text
-              style={themed($bigTitle)}
-              text={`${myStatusStore.nickname}${t('pastScreen:bigTitle')}`}
-            />
+            <View>
+              <Text
+                style={themed($bigTitle)}
+                text={`${myStatusStore.nickname}${t('pastScreen:bigTitle')}`}
+              />
+            </View>
           }
           renderItem={({item})=>(
             <Card 
@@ -159,6 +161,11 @@ const $bigTitle: ThemedStyle<TextStyle> = ({ spacing }) => ({
   fontWeight : '600',
   fontSize : spacing.lg,
   lineHeight : spacing.xl,
+})
+
+const $screenTimeLinkZone: ThemedStyle<ViewStyle> = ({spacing}) => ({
+  flexDirection : 'row',
+  paddingBottom : spacing.md,
 })
 
 const $pastMainPage: ThemedStyle<ViewStyle> = ({}) => ({

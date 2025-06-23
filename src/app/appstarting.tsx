@@ -1,7 +1,7 @@
 import { Button, Screen, Text, TextField } from "@/components";
 import { ThemedStyle } from "@/theme";
 import { useAppTheme } from "@/utils/useAppTheme";
-import { Alert, Linking, Modal, TextStyle, View, ViewStyle, Platform, PermissionsAndroid, ScrollView, ActivityIndicator } from "react-native";
+import { Alert, Linking, Modal, TextStyle, View, ViewStyle, Platform, PermissionsAndroid, ScrollView, ActivityIndicator, Image } from "react-native";
 import { useEffect, useState } from "react";
 import { useStores } from "@/models";
 import { useTranslation } from "react-i18next";
@@ -14,6 +14,7 @@ import { checkInternetConnection } from "@/utils/network";
 
 
 const messaging = getMessaging();
+const ddddiaryChar = require("../../assets/images/ddddiaryChar_cut1.png");
 
 export default function appStarting() {
   const { theme, themed } = useAppTheme();
@@ -106,7 +107,7 @@ export default function appStarting() {
         Alert.alert(t('appStartScreen:welcomeJoin1'),t('appStartScreen:welcomeJoin2'));
         await myStatusStore.saveMyStatus();
         setIsSaved(true);
-        route.push('/(tabs)/(todaytab)/todaywrite');
+        route.replace('/(tabs)/(todaytab)/todaywrite');
       } else {
         setWarning(response);
         setIsSaved(true);
@@ -133,12 +134,20 @@ export default function appStarting() {
                 tx="appStartScreen:helloBeginner"
                 style={themed($welcomeHeader)}
               />
+              <Image
+                source={ddddiaryChar}
+                style={{maxWidth: '100%'}}
+              />
               <Text
                 tx="appStartScreen:needYourInfo"
                 style={themed($welcomeHeader)}
               />
               {initialLang !== "en" ? 
                 <Text text={"Hello!\nWe only need 2 pieces of information from you."} /> : null }
+              <Text
+                tx="appStartScreen:dontWorry"
+                preset="default"
+              />
               <Text
                 tx="appStartScreen:yourAlarmAllow"
                 preset="subheading"

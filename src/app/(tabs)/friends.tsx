@@ -131,7 +131,7 @@ export default observer(function Friends() {
       <Header 
         titleTx="tabs:friends"
         containerStyle={themed($header)}
-        LeftActionComponent={ page ?
+        RightActionComponent={ page ?
           <Button 
             preset='default'
             tx='friendScreen:addNew' 
@@ -139,7 +139,7 @@ export default observer(function Friends() {
             onPress={()=>{setPage(false); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);}}
           /> : <Text text="" />
         }
-        RightActionComponent={ page ? 
+        LeftActionComponent={ page ? 
           <Button 
             preset="default"
             tx="friendScreen:refreshBtn"

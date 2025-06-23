@@ -57,6 +57,9 @@ export default function TabLayout() {
         checkIfNewDay();
         Notifications.setBadgeCountAsync(0);
       }
+      if(state === "inactive" || state === "background") {
+        handleNextAlarmFCM();
+      }
     });
     return () => {
       subscription.remove();
@@ -72,6 +75,19 @@ export default function TabLayout() {
     }
   };
 
+  const handleNextAlarmFCM = () => {
+    if(myStatusStore.somethingChanged && myStatusStore.todayProcess) {
+      const response = myStatusStore.myDiaries.get(myStatusStore.todayNDate.toString());
+      if (response) {
+        const nowAlarms = [...response.alarms];
+        if (nowAlarms.length > 0) {
+          myStatusStore.fetchNextAlarmFCM(nowAlarms);
+        } else {
+          myStatusStore.setProp("fetchedNextAlarm", "");
+        }
+      }
+    }
+  };
 
   return (
     <Tabs

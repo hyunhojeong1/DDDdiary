@@ -406,7 +406,6 @@ export default observer(function TodayWrite() {
               preset="formHelper"
               onPress={()=> Platform.OS === "ios" ? Linking.openURL("app-settings:DDDdiary") : Linking.openSettings()}
             />            
-
           </CardView>
 
 

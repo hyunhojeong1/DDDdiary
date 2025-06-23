@@ -38,6 +38,7 @@ export const MyStatusStoreModel = types
     fcmToken : "",
     admobOn : types.optional(types.boolean, false),
     somethingChanged : false,
+    fetchedNextAlarm : "",
   })
   .actions(withSetPropAction)
   .actions((store) => ({
@@ -316,6 +317,7 @@ export const MyStatusStoreModel = types
         store.setProp("todayAlarmLastTopic", response.todayAlarmLastTopic);
         store.setProp("fcmToken", response.fcmToken);
         store.setProp("admobOn", response.admobOn);
+        store.setProp("fetchedNextAlarm", response.fetchedNextAlarm);
         await store.dateRenewal();
         store.setTodayProcess();
         store.setTodayQuestion();
@@ -387,6 +389,28 @@ export const MyStatusStoreModel = types
     async modelAndSaveOneDiary(fulldate : number, contents : object) { // 일기 수정 저장오류 개선
       store.myDiaries.set(fulldate.toString(), contents);
       await save("myStatus", store);
+    },
+    async fetchNextAlarmFCM(nowAlarms : string[]) {
+      await store.dateRenewal();
+      const sortedAlarms = nowAlarms.filter(alarm => changeTimetoNumber(alarm).timeNumber > getCurrentDate().currentTimeNumber+1); // 동일 시-분에서 필터링 안 먹힘?
+      if (sortedAlarms.length === 0 || store.fcmToken === "") {
+        store.setProp("fetchedNextAlarm", "");
+        return;
+      } else if (sortedAlarms[0] !== store.fetchedNextAlarm) {
+        try {
+          const ffFunction = httpsCallable<unknown, void>(getFunctions(undefined, "asia-northeast3"), 'ffFetchNextAlarmFCM');
+          store.setProp("fetchedNextAlarm", sortedAlarms[0]);
+          await save("myStatus", store);
+          await ffFunction({
+            nextAlarm : sortedAlarms[0],
+            fcmToken : store.fcmToken,
+            userCLang : store.userCLang
+          });
+        } catch (e) {
+          log(crashlytics, 'Firebase - fetchNextAlarmFCM Error');
+          recordError(crashlytics, e as Error);
+        }
+      }
     },
   }))
 
