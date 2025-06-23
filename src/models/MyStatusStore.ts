@@ -400,12 +400,12 @@ export const MyStatusStoreModel = types
         try {
           const ffFunction = httpsCallable<unknown, void>(getFunctions(undefined, "asia-northeast3"), 'ffFetchNextAlarmFCM');
           store.setProp("fetchedNextAlarm", sortedAlarms[0]);
-          await save("myStatus", store);
           await ffFunction({
             nextAlarm : sortedAlarms[0],
             fcmToken : store.fcmToken,
             userCLang : store.userCLang
           });
+          await save("myStatus", store);
         } catch (e) {
           log(crashlytics, 'Firebase - fetchNextAlarmFCM Error');
           recordError(crashlytics, e as Error);
