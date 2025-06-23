@@ -392,9 +392,10 @@ export const MyStatusStoreModel = types
     },
     async fetchNextAlarmFCM(nowAlarms : string[]) {
       await store.dateRenewal();
-      const sortedAlarms = nowAlarms.filter(alarm => changeTimetoNumber(alarm).timeNumber > getCurrentDate().currentTimeNumber+1); // 동일 시-분에서 필터링 안 먹힘?
+      const sortedAlarms = nowAlarms.filter(alarm => changeTimetoNumber(alarm).timeNumber > getCurrentDate().currentTimeNumber);
       if (sortedAlarms.length === 0 || store.fcmToken === "") {
         store.setProp("fetchedNextAlarm", "");
+        await save("myStatus", store);
         return;
       } else if (sortedAlarms[0] !== store.fetchedNextAlarm) {
         try {

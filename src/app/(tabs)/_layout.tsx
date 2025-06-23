@@ -57,7 +57,7 @@ export default function TabLayout() {
         checkIfNewDay();
         Notifications.setBadgeCountAsync(0);
       }
-      if(state === "inactive" || state === "background") {
+      if(state === "background") {
         handleNextAlarmFCM();
       }
     });
@@ -76,7 +76,7 @@ export default function TabLayout() {
   };
 
   const handleNextAlarmFCM = () => {
-    if(myStatusStore.somethingChanged && myStatusStore.todayProcess) {
+    if(myStatusStore.todayProcess) {
       const response = myStatusStore.myDiaries.get(myStatusStore.todayNDate.toString());
       if (response) {
         const nowAlarms = [...response.alarms];
@@ -84,6 +84,7 @@ export default function TabLayout() {
           myStatusStore.fetchNextAlarmFCM(nowAlarms);
         } else {
           myStatusStore.setProp("fetchedNextAlarm", "");
+          myStatusStore.saveMyStatus();
         }
       }
     }
