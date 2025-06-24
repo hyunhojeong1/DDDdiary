@@ -75,7 +75,8 @@ export default function TabLayout() {
     }
   };
 
-  const handleNextAlarmFCM = () => {
+  const handleNextAlarmFCM = async () => {
+    if(AppState.currentState === "active") return; // active 되기 전 잠깐 background로 인식하는 문제 개선
     if(myStatusStore.todayProcess) {
       const response = myStatusStore.myDiaries.get(myStatusStore.todayNDate.toString());
       if (response) {

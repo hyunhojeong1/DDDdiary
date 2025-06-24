@@ -390,8 +390,7 @@ export const MyStatusStoreModel = types
       store.myDiaries.set(fulldate.toString(), contents);
       await save("myStatus", store);
     },
-    async fetchNextAlarmFCM(nowAlarms : string[]) {
-      await store.dateRenewal();
+    async fetchNextAlarmFCM(nowAlarms : string[]) { // dateRenewal 제거
       const sortedAlarms = nowAlarms.filter(alarm => changeTimetoNumber(alarm).timeNumber > getCurrentDate().currentTimeNumber);
       if (sortedAlarms.length === 0 || store.fcmToken === "") {
         store.setProp("fetchedNextAlarm", "");

@@ -30,6 +30,8 @@ export default observer(function Friends() {
   const myMemoRef = useRef<TextInput>(null);
   const [mymemo, setMymemo] = useState("");
   const [isSaved, setIsSaved] = useState(true);
+  const [isDeleted, setIsDeleted] = useState(true);
+
 
   const bannerRef = useRef<BannerAd>(null);
   const admobOn = myStatusStore.admobOn;
@@ -79,13 +81,25 @@ export default observer(function Friends() {
     myFriendStore.toggleFavorite(nickrandomId);
   };
 
-  const handleDeleteFriend = (nickrandomId : string) => {
+  const handleDeleteFriend = async (nickrandomId : string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const hasInternet = await checkInternetConnection();
+    if(!hasInternet){
+      Alert.alert(t('appStartScreen:warnNoInternet1'), t('appStartScreen:warnNoInternet2'));
+      return;
+    }
     Alert.alert(
       t('friendScreen:explainDelete'), t('friendScreen:explainDelete2'),
       [{ text: t('common:cancel'), style: 'destructive' },
-        { text: t('common:ok'), onPress: () => {
-          myFriendStore.deleteFriend(nickrandomId);
+        { text: t('common:ok'), onPress: async () => {
+          setIsDeleted(false);
+          try {
+            await myFriendStore.deleteFriend(nickrandomId);
+            setIsDeleted(true);
+          } catch (e) {
+            Alert.alert(t('settingScreen:invalidFFRequest1'), t('settingScreen:invalidFFRequest2'));
+            setIsDeleted(true);
+          }
       }}]
     );
   };
@@ -221,7 +235,9 @@ export default observer(function Friends() {
                     />
                     <Button
                       RightAccessory={()=>(
-                        <FontAwesome name="ban" size={19} color="#999999" />
+                        isDeleted ? 
+                          <FontAwesome name="ban" size={19} color="#999999" />
+                          : <View><ActivityIndicator size={"small"} /></View>
                       )}
                       onPress={()=>handleDeleteFriend(item.friendNickRandom)}
                       style={themed($listItemBtn)}

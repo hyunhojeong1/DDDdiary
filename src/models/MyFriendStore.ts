@@ -52,6 +52,9 @@ export const MyFriendStoreModel = types
     clearFriends() {
       store.MyFriends.clear();
     },
+    unmodelFriend(friendNickRandom : string) { // deleteFriend가 async로 수정되면서 Map.delete 사용 불가하게 변화
+      store.MyFriends.delete(friendNickRandom);
+    },
     addSortedFriends(sortedFriends : MyFriend[]) {
       sortedFriends.map((value)=> store.MyFriends.set(value.friendNickRandom, value));
     },
@@ -120,8 +123,18 @@ export const MyFriendStoreModel = types
         store.setProp("refetchFriends",true);
       }
     },
-    deleteFriend(friendNickRandom : string) {
-      store.MyFriends.delete(friendNickRandom);
+    async deleteFriend(friendNickRandom : string) {
+      const oldFriendsArray = [...Array.from(store.MyFriends.keys())];
+      const newFriendsArray = oldFriendsArray.filter(friend => friend !== friendNickRandom);
+      const ffFunction = httpsCallable<unknown, void>(getFunctions(undefined, "asia-northeast3"), 'ffSavingHub');
+      await ffFunction({
+        hubType : "friends",
+        nickrandom : "dolko100000",
+        todayprocess : true,
+        friends : newFriendsArray,
+        timezoneminute : 0
+      });
+      store.unmodelFriend(friendNickRandom); // async로 수정 이후 별도 action 필요
       store.saveMyFriends();
     },
     async deleteAllFriends() {
