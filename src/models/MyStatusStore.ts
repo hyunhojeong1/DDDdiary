@@ -10,6 +10,7 @@ import { getFunctions, httpsCallable } from "@react-native-firebase/functions"
 import { getMessaging } from '@react-native-firebase/messaging';
 import { enUS } from "date-fns/locale"
 import { getCrashlytics, log, recordError } from "@react-native-firebase/crashlytics"
+import AsyncStorage from "@react-native-async-storage/async-storage"
 
 const messaging = getMessaging();
 const crashlytics = getCrashlytics();
@@ -136,12 +137,27 @@ export const MyStatusStoreModel = types
         }
       } else return 'appStartScreen:errorInfo';
     },
-    get lastUsedAlarm() {
+    get preUsedTodoList() {
+      const values = Array.from(store.myDiaries.values())
+        .filter((value)=> (value.text1.length + value.text2.length) > 4 && value.diaryNDate !== store.todayNDate)
+        .sort((a,b)=> b.diaryNDate - a.diaryNDate);
+      let lastTodoText1 = "";
+      let lastTodoText2 = "";
+      if(values.length !== 0){
+        lastTodoText1 = values[0].text1;
+        lastTodoText2 = values[0].text2;
+      }
+      return {lastTodoText1, lastTodoText2};
+    },
+    get preUsedAlarms() {
       const values = Array.from(store.myDiaries.values())
         .filter((value)=> value.alarms.length !== 0 && value.diaryNDate !== store.todayNDate)
         .sort((a,b)=> b.diaryNDate - a.diaryNDate);
       if(values.length !== 0){
-        return values[0].alarms;
+        const preAlarms = values.map((value)=> {
+          return [value.diaryNDate.toString(), ...value.alarms];
+        })
+        return preAlarms;
       } else {
         return [];
       }
@@ -390,7 +406,7 @@ export const MyStatusStoreModel = types
       store.myDiaries.set(fulldate.toString(), contents);
       await save("myStatus", store);
     },
-    async fetchNextAlarmFCM(nowAlarms : string[]) { // dateRenewal 제거
+    async fetchNextAlarmFCM(nowAlarms : string[]) { // dateRenewal 제거 -> 방식 바뀌어서 안 쓴다.
       const sortedAlarms = nowAlarms.filter(alarm => changeTimetoNumber(alarm).timeNumber > getCurrentDate().currentTimeNumber);
       if (sortedAlarms.length === 0 || store.fcmToken === "") {
         store.setProp("fetchedNextAlarm", "");
@@ -400,17 +416,64 @@ export const MyStatusStoreModel = types
         try {
           const ffFunction = httpsCallable<unknown, void>(getFunctions(undefined, "asia-northeast3"), 'ffFetchNextAlarmFCM');
           store.setProp("fetchedNextAlarm", sortedAlarms[0]);
-          await ffFunction({
-            nextAlarm : sortedAlarms[0],
-            fcmToken : store.fcmToken,
-            userCLang : store.userCLang
-          });
+          // await ffFunction({
+          //   nextAlarm : sortedAlarms[0],
+          //   fcmToken : store.fcmToken,
+          //   userCLang : store.userCLang
+          // });
           await save("myStatus", store);
         } catch (e) {
           log(crashlytics, 'Firebase - fetchNextAlarmFCM Error');
           recordError(crashlytics, e as Error);
         }
       }
+    },
+    async fetchNextAlarmTime() {
+      const response = store.myDiaries.get(store.todayNDate.toString());
+      if (response) {
+        const nowAlarms = [...response.alarms];
+        if (nowAlarms.length > 0) {
+          const sortedAlarms = nowAlarms.filter(alarm => changeTimetoNumber(alarm).timeNumber > getCurrentDate().currentTimeNumber);
+          if (sortedAlarms.length === 0 || store.fcmToken === "") {
+            store.setProp("fetchedNextAlarm", "");
+            await save("myStatus", store);
+            return "noMoreAlarm";
+          } else if (sortedAlarms[0] !== store.fetchedNextAlarm) {
+            store.setProp("fetchedNextAlarm", sortedAlarms[0]);
+            await save("myStatus", store);
+            return sortedAlarms[0];
+          } else if (sortedAlarms[0] === store.fetchedNextAlarm) {
+            return "noMoreAlarm";
+          }
+        }
+      }
+      store.setProp("fetchedNextAlarm", "");
+      await save("myStatus", store);
+      return "noMoreAlarm";
+    },
+    async addingReuseTimeTask(newTask : string) {
+      const response = store.myDiaries.get(store.todayNDate.toString());
+      if(response) {
+        let newText3 = `${""}${response.text3}`;
+        newText3 = `${newText3}\n${newTask}`;
+        const contents = {
+          diaryNDate : response.diaryNDate,
+          diaryISODate : response.diaryISODate,
+          text1 : response.text1,
+          text2 : response.text2,
+          text3 : newText3,
+          shareCheck : response.shareCheck,
+          cautionCheck : response.cautionCheck,
+          dailyQuestion : response.dailyQuestion,
+          alarms : [...response.alarms], // MST 추적 끊기
+          alarmsZone : response.alarmsZone,
+        };
+        store.modelOneDiary(response.diaryNDate, contents);
+        if(store.todayProcess) { // 수정 중 아닐 때만 값 저장, 충돌 방지 목적
+          await save("myStatus", store);
+        }
+      }
+      await AsyncStorage.removeItem('@lockscreen_reply');
     },
   }))
 

@@ -10,7 +10,8 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Octicons from '@expo/vector-icons/Octicons';
 import { getMessaging } from '@react-native-firebase/messaging';
 import * as Notifications from 'expo-notifications';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import notifee, {AndroidImportance} from '@notifee/react-native';
 
 let isListenerRegistered = false;
 const messaging = getMessaging();
@@ -49,6 +50,34 @@ export default function TabLayout() {
     }
   };
 
+  useEffect(()=> { // 초기 회원가입보다 후순위로 배치
+    handleNotifee();
+  },[]);
+
+  const handleNotifee = async() => {
+    await notifee.createChannel({
+      id: 'notif2NextReuse',
+      name: 'notif2NextReuse',
+      importance: AndroidImportance.HIGH,
+    });
+
+    await notifee.setNotificationCategories([
+      {
+        id: 'reply',
+        actions: [
+          {
+            id: 'reply',
+            title: 'Reply',
+            input: {
+              placeholderText: t('tabs:iosAskReply'),
+              buttonText: t('tabs:iosReplyBtn'),
+            },
+          },
+        ],
+      },
+    ]);
+  };
+
   useEffect(()=>{
     if(isListenerRegistered) return;
     isListenerRegistered = true;
@@ -58,7 +87,8 @@ export default function TabLayout() {
         Notifications.setBadgeCountAsync(0);
       }
       if(state === "background") {
-        handleNextAlarmFCM();
+        // handleNextAlarmFCM();
+        handleNextAlarmNotifee();
       }
     });
     return () => {
@@ -72,21 +102,65 @@ export default function TabLayout() {
     if(lastRefreshDateRef.current !== today) {
       lastRefreshDateRef.current = today;
       myStatusStore.setRefresh();
+    } else {
+      handleAddingTask();
     }
   };
 
-  const handleNextAlarmFCM = async () => {
+  // const handleNextAlarmFCM = async () => { 방식 변경 - notifee로 대체
+  //   if(AppState.currentState === "active") return; // active 되기 전 잠깐 background로 인식하는 문제 개선
+  //   if(myStatusStore.todayProcess) {
+  //     const response = myStatusStore.myDiaries.get(myStatusStore.todayNDate.toString());
+  //     if (response) {
+  //       const nowAlarms = [...response.alarms];
+  //       if (nowAlarms.length > 0) {
+  //         myStatusStore.fetchNextAlarmFCM(nowAlarms);
+  //       } else {
+  //         myStatusStore.setProp("fetchedNextAlarm", "");
+  //         myStatusStore.saveMyStatus();
+  //       }
+  //     }
+  //   }
+  // };
+
+  const handleNextAlarmNotifee = async () => {
     if(AppState.currentState === "active") return; // active 되기 전 잠깐 background로 인식하는 문제 개선
-    if(myStatusStore.todayProcess) {
-      const response = myStatusStore.myDiaries.get(myStatusStore.todayNDate.toString());
-      if (response) {
-        const nowAlarms = [...response.alarms];
-        if (nowAlarms.length > 0) {
-          myStatusStore.fetchNextAlarmFCM(nowAlarms);
-        } else {
-          myStatusStore.setProp("fetchedNextAlarm", "");
-          myStatusStore.saveMyStatus();
-        }
+    if(!myStatusStore.todayProcess) return;
+
+    const resultAlarmTime = await myStatusStore.fetchNextAlarmTime();
+    let todoList = myStatusStore.myDiaries.get(myStatusStore.todayNDate.toString())?.text1 ?? "";
+    if(resultAlarmTime !== "noMoreAlarm") {
+      await notifee.displayNotification({
+        title: `${t('tabs:notifeeNextAlarm')}${resultAlarmTime}`,
+        body: `${t('tabs:notifeeMyTodo')}${todoList}`,
+        ios: {
+          categoryId: 'reply',
+        },
+        android: {
+          channelId: 'notif2NextReuse',
+          smallIcon: 'notification_icon',
+          actions: [
+            {
+              title: `${t('tabs:replyReuseTask')}`,
+              pressAction: { id: 'reply' },
+              input: {
+                allowFreeFormInput: true,
+                placeholder: `${t('tabs:askReuseTask')}`,
+              },
+            },
+          ],
+        },
+      });
+    }
+  };
+
+  const handleAddingTask = async () => {
+    if(!myStatusStore.todayProcess) {
+      await AsyncStorage.removeItem('@lockscreen_reply');
+    } else {
+      const value = await AsyncStorage.getItem('@lockscreen_reply');
+      if (value !== null && value !== "") {
+        await myStatusStore.addingReuseTimeTask(value);
       }
     }
   };

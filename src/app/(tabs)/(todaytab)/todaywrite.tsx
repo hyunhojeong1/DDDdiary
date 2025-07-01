@@ -35,12 +35,18 @@ export default observer(function TodayWrite() {
   const [cautionCheck, setCautionCheck] = useState<boolean>(false);
   const [alarms, setAlarms] = useState<string[]>([]);
   const [reUseComment, setReUseComment] = useState<boolean>(false);
+  const [reuseTodoComment, setReuseTodoComment] = useState<boolean>(false);
 
   //알람세팅
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [hour, setHour] = useState<string>('12');
   const [minute, setMinute]= useState<string>('00');
   const [ampm, setAmpm] = useState<string>('PM');
+
+  //이전알람모달
+  const [preAlarmModalVisible, setPreAlarmModalVisible] = useState<boolean>(false);
+  const [preAlarms, setPreAlarms] = useState<string[][]>([]);
+  const [preAlarmPickString, setPreAlarmPickString] = useState<string>(""); // ios는 picker value 배열사용 불가
 
   useEffect(()=>{
     handleInitialDiary();
@@ -141,6 +147,35 @@ export default observer(function TodayWrite() {
     }
   };
 
+  const handleReuseTodo = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Alert.alert(
+      t('todayWScreen:explainReuse'),
+      "",
+      [
+        { text: t('common:cancel'), style: 'destructive' },
+        { text: t('todayWScreen:comeHere'), onPress: () => {
+          const {lastTodoText1, lastTodoText2} = myStatusStore.preUsedTodoList;
+          if (lastTodoText1.length > 0 || lastTodoText2.length > 0) {
+            setText1(lastTodoText1);
+            setText2(lastTodoText2);
+          } else {
+            setReuseTodoComment(true);
+          }
+        }},
+    ]);
+  };
+
+  const handleOpenAlarmModal = () => {
+    setModalVisible(true);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const currentTimeNumber = getCurrentDate().currentTimeNumber;
+    if(currentTimeNumber < 1200 && alarms.length === 0) {
+      setHour('1');
+      setAmpm('AM');
+    }
+  };
+  
   const handleAddAlarm = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     let modifiedMinute = minute;
@@ -163,18 +198,25 @@ export default observer(function TodayWrite() {
     setModalVisible(false);
   };
 
+  const handleReuseAlarmModal = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const preAlarms = [...myStatusStore.preUsedAlarms];
+    if(preAlarms.length !==0) {
+      setPreAlarms(preAlarms);
+      const initialPick = `${preAlarms[0][0]}@${preAlarms[0].slice(1).join(", ")}`;
+      setPreAlarmPickString(initialPick);
+      setPreAlarmModalVisible(true);
+    } else {
+      setReUseComment(true);
+    }
+  };
+
   const handleReuseAlarm = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    Alert.alert(
-      t('todayWScreen:explainReuse'),"",
-      [{ text: t('common:cancel'), style: 'destructive' },
-        { text: t('todayWScreen:comeHere'), onPress: () => {
-          const lastUsed = [...myStatusStore.lastUsedAlarm];
-            if(lastUsed.length !==0){
-              setAlarms(lastUsed);
-            } else { setReUseComment(true); }
-      }}]
-    );
+    const reArray1 = preAlarmPickString.split("@");
+    const reArray2 = reArray1[1].split(", ");
+    setAlarms(reArray2);
+    setPreAlarmModalVisible(false);
   };
 
   const handleDeleteAlarm = (alarmToDel : string) => {
@@ -240,6 +282,18 @@ export default observer(function TodayWrite() {
               tx="todayWScreen:q1"
               preset="subheading"
             />
+            <Text
+              tx='todayWScreen:reuseTodoBtn'
+              preset="formLabel"
+              style={themed($reuseLastTodoBtn)}
+              onPress={handleReuseTodo}
+            />
+            { reuseTodoComment ? 
+              <Text
+                tx='todayWScreen:reuseTodoComment'
+                preset="default"
+              /> : null
+            }
             <TextField
               maxLength={2000}
               inputWrapperStyle={themed($activeTextField)}
@@ -282,12 +336,12 @@ export default observer(function TodayWrite() {
             <View style={{flexDirection:'row'}}>
               <Button 
                 tx="todayWScreen:addAlarmBtn"
-                onPress={()=>{setModalVisible(true); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);}}
+                onPress={handleOpenAlarmModal}
                 style={themed($alarmAddBtnLeft)}
               />
               <Button 
                 tx="todayWScreen:reuseAlarmBtn"
-                onPress={()=>handleReuseAlarm()}
+                onPress={handleReuseAlarmModal}
                 style={themed($alarmAddBtnRight)}
               />
             </View>
@@ -472,6 +526,45 @@ export default observer(function TodayWrite() {
             </View>
           </Modal>
 
+          <Modal 
+            visible={preAlarmModalVisible} 
+            transparent={true} 
+            animationType="slide"
+          >
+            <View style={themed($GeneralModal)}>
+              <View style={themed($GeneralModalHeader)}>
+                <Button 
+                  tx="common:cancel" 
+                  onPress={()=>{setPreAlarmModalVisible(false); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);}}
+                  style={themed($GeneralModalBtn)}
+                  textStyle={themed($GeneralModalBtnTx)}
+                />
+                <Button 
+                  tx="common:ok" 
+                  onPress={handleReuseAlarm} 
+                  style={themed($GeneralModalBtn)}
+                  textStyle={themed($GeneralModalBtnTx)}
+                />
+              </View>
+              <View style={[themed($GeneralPickerContainer), $bottomContainerInsets]}>
+                <Picker 
+                  selectedValue={preAlarmPickString} 
+                  onValueChange={setPreAlarmPickString}
+                  style={themed($preAlarmPicker)}
+                  itemStyle = {themed($pickerText)}
+                  dropdownIconColor={theme.colors.palette.neutral900}
+                >
+                  {preAlarms.length > 0 ?
+                    preAlarms.map(
+                      alarms => (<Picker.Item key={alarms[0]} label={`${alarms[0].slice(2)}: ${alarms.slice(1).join(", ")}`} value={`${alarms[0]}@${alarms.slice(1).join(", ")}`} />)
+                    )
+                  : null
+                  }
+                </Picker>
+              </View>
+            </View>
+          </Modal>
+
         </View>
       </ScrollView></MotiView>
     </View>
@@ -509,6 +602,16 @@ const $statusBtn : ThemedStyle<ViewStyle> = ({spacing}) => ({
   paddingHorizontal: spacing.xxl,
   paddingVertical: spacing.xxs,
   minHeight : spacing.xl,
+})
+
+const $reuseLastTodoBtn: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+  backgroundColor : colors.palette.neutral200,
+  margin: spacing.xs,
+  borderRadius: spacing.lg,
+  alignSelf : 'flex-start',
+  textAlign : 'center',
+  paddingHorizontal : spacing.md,
+  paddingVertical : spacing.xxs,
 })
 
 const $activeTextField: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
@@ -600,6 +703,12 @@ const $GeneralPickerContainer: ThemedStyle<ViewStyle> = ({ colors }) => ({
 
 const $timePicker: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
   minWidth : '30%',
+  marginBottom : spacing.xxxl,
+  color : colors.palette.neutral900,
+})
+
+const $preAlarmPicker: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+  minWidth : '95%',
   marginBottom : spacing.xxxl,
   color : colors.palette.neutral900,
 })

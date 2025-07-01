@@ -306,6 +306,18 @@ ignite-cli (used for initial project generation): 10.3.0 : {
     "repository": "https://github.com/expo/vector-icons",
     "publisher": "Brent Vatne"
 },
+"@notifee/react-native@9.1.8": {
+    "licenses": "Apache-2.0",
+    "repository": "https://github.com/invertase/notifee",
+    "publisher": "Invertase",
+    "email": "oss@invertase.io",
+},
+"@react-native-async-storage/async-storage@1.24.0": {
+    "licenses": "MIT",
+    "repository": "https://github.com/react-native-async-storage/async-storage",
+    "publisher": "Krzysztof Borowy",
+    "email": "contact@kborowy.com",
+},
 Image Title: "Empty Desert Illustration" : {
     source: Generated using ChatGPT by OpenAI
     license: Permissive use under OpenAI content policy

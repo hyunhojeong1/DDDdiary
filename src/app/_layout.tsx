@@ -65,7 +65,7 @@ export default function Root() {
       setIsInternetReady(true);
     }
   };
-  
+
   useEffect(()=>{
     const rnfbProvider = appCheck.newReactNativeFirebaseAppCheckProvider();
     rnfbProvider.configure({
