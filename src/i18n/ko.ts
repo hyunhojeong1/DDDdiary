@@ -21,6 +21,13 @@ const ko: Translations = {
     doIt : "진행시켜!",
     errorHappened : "오류 발생",
     tryAgain : "다시 시도해 주세요.",
+    Sun: "일", //바꿔라바꿔라
+    Mon: "월",
+    Tue: "화",
+    Wed: "수",
+    Thu: "목",
+    Fri: "금",
+    Sat: "토", //바꿔라바꿔라
   },
   tabs: {
     notifeeNextAlarm: "다음 스마트폰 재사용 시간은: ",
@@ -43,15 +50,19 @@ const ko: Translations = {
     noSpecialSpace: "[안내] 특수문자, 공백 사용이 불가합니다.",
     errorInfo: "[안내] 오류가 발생했습니다. 다시 시도해 주세요.",
     helloBeginner: "안녕하세요!",
-    needYourInfo : "딱 2가지 정보만 받을게요.",
-    dontWorry: "개인정보 유출은 걱정 그만!\n우린 닉네임만 수집해서 당신이 누군지 도저히 알 수 없어요.",
+    needYourInfo : "DDDdiary 이용을 위해서는 아래 초기 설정이 필요해요.", // 바꿔바꿔- 본페이지 영어 자막도 바꿔야한다!!
+    dontWorry: "프라이버시 안전보장!\n(우린 닉네임만 수집해서 당신이 누군지 도무지 알 수 없어요)", // 바꿔바꿔
     yourNickname : "2. 닉네임(별명, 애칭)",
     yourAlarmAllow : "1. 알림 허용",
-    explainAlarmAllow : "일기 알람 수신을 위해 기기 앱 알림 설정을 허용해주세요. 미동의 시 다이어리 일부 기능이 제한됩니다.",
+    explainAlarmAllow : "알람 수신을 위해 앱 알림을 허용해주세요. 허용하지 않을 시 다이어리 주요 기능이 제한됩니다.", // 바꿔바꿔
+    yourGoogleAds : "3. 광고 개인 맞춤화(선택사항)", // 바꿔바꿔
+    explainGoogleAds : "DDDdiary는 앱 유지비용을 광고로 충당합니다.\n개인 맞춤형 광고 동의 시, 광고 제공업체(구글 Admob사)가 사용자의 이력을 추적하여 개인에 최적화된 광고를 제공합니다.\n거부 시 사용자 이력을 추적하지 않으며, 일반 무작위 광고가 제공됩니다.", // 바꿔바꿔
     okBtn : "알겠다.\n(Got it.)",
     yourLanguage : "현재 설정된 언어 :",
     needYourNickname : "닉네임 정하기 :",
     askNickname : "닉네임(별명,애칭)을 입력해주세요.",
+    setDailyAlarm : "일일 알람 설정:", // 바꿔바꿔
+    explainDailyAlarm : "매일 일기 작성을 상기시켜주는 리마인드 알람을 설정해보세요.\n(선택사항)", // 바꿔바꿔
     letsJoin : "가보자고!",
     welcomeJoin1 : "중독탈출 도전을 환영합니다!",
     welcomeJoin2 : "오늘의 일기를 작성해보세요.",
@@ -62,37 +73,42 @@ const ko: Translations = {
   todayWScreen: {
     todayStart:"시작",
     needWarningCheck : "주의사항 확인 필요",
-    explainWarningCheck : "항목6 의 주의사항을 읽고 확인 클릭해주세요.",
+    explainWarningCheck : "항목4 의 주의사항을 읽고 확인 클릭해주세요.", // 바꿔바꿔라
     needWait12 : "오우 열정이 대단하신데요, 하지만..",
     explainWait12 : "날짜 변경으로 10초간 일기 저장이 막힙니다. 잠시만요!",
     writing : " 작성중..  ",
     cancelWriting : '작성 취소하기',
     explainCancel : '변경한 내용이 저장되지 않습니다.',
-    q1 : "1. 현재 해야 할 일은 무엇인가요?:",
+    q1 : "1. 현재 할 일, 하고픈 일을 적어주세요:", // 바꿔바꿔
     reuseTodoBtn : "이전 일기 부르기",
-    explainReuse : "가장 최근에 작성한 과거일기에서 '할 일' 내용을 불러옵니다.",
+    explainReuse : "가장 최근에 작성한 과거일기에서 할 일 목록을 불러옵니다.", // 바꿔바꿔
     comeHere : "들라하라",
     reuseTodoComment : "[안내]\n과거 일기 불러오기 불가 : 최근 2주 내 작성한 과거 일기가 없습니다.",
     placeholderQ1 : "예) 빨래하기, 친구 만나기, 장보기, 시험공부하기",
-    q2 : "2. 현재 하고 싶은 일은 무엇인가요?:",
-    placeholderQ2 : "예) 책읽기, 드라마 보기, 게임하기",
-    qAlarm : "3. 스마트폰 재사용 알람시간 설정:",
-    explainAlarm : "[안내]\n1. 스마트폰을 재사용할 목표시간을 정하여 알람을 설정해보세요.\n2. 최대 7개의 알람 설정이 가능합니다.\n3. 무음모드 상태에서는 알람음이 울리지 않습니다.",
-    addAlarmBtn : "알람 추가",
-    reuseAlarmBtn : "이전 알람 재사용",
-    reUseComment : "[안내]\n알람 재사용 불가 : 최근 2주 내 사용한 과거 알람이 없습니다.",
-    warnMaxAlarm : "알람 설정 실패",
-    explainMaxAlarm : "알람은 최대 7개까지 설정 가능합니다.",
-    shareCheck : "친구에게 알람시간 공개",
-    q3 : "4. 스마트폰 재사용 시간에 할 일:",
-    explainQ3 : '[안내]\n재사용 알람시간 전에 스마트폰을 쓸 일이 떠올랐다면, 아래에 적어두세요.\n예) "아 맞다! 오늘 주식 올랐는지 궁금한데!"\n적어둔 일들을 재사용 시간에 몰아서 한번에 해결하세요!',
+    q2 : "2. 오늘의 물음:", // 바꿔바꿔
+    placeholderQ2 : "이 답변은 친구들과 공유됩니다. 공유를 원하지 않으시면 마음 속으로만 생각하세요!", // 바꿔바꿔
+    qAlarm : "3. 스마트폰 재사용 목표시간을 설정하세요: ", // 바꿔바꿔
+    explainAlarm : "목표시간에 알림 메시지를 보내드립니다.", // 바꿔바꿔
+    addAlarmBtn : "알림 추가", // 바꿔바꿔
+    reuseAlarmBtn : "이전 알림 재사용", // 바꿔바꿔
+    explainPreAlarmUse : "과거 일기에 사용했던 알람들 중 하나를 선택하세요.", // 바꿔바꿔
+    reUseComment : "[안내]\n알림 재사용 불가 : 최근 2주 내 사용한 과거 알림이 없습니다.", //바꿔바꿔
+    warnMaxAlarm : "알림 설정 실패", // 바꿔바꿔
+    explainMaxAlarm : "알림은 최대 7개까지 설정 가능합니다.", //바꿔바꿔
+    shareCheck : "친구에게 알림시간 공개", //바꿔바꿔
+    q3 : "나의 다음 스마트폰 재사용 시간은: ", //바꿔바꿔
+    explainQ3 : '앱 사용법:', // 바꿔바꿔
+    instruction1 : "① 앱을 닫거나 화면이 꺼지면 '나의 할 일' 목록을 <bold>알림 메시지</bold>로 보내드려요.", // 바꿔바꿔 3세트
+    instruction2 : "② 도전!! - 다음 재사용 시간까지 화면 잠금을 풀지 마세요!(강제로 잠기지 않습니다. 100% 본인의 의지에 달려있어요!)\n중간에 폰을 사용할 일이 생각났다면, <bold>알림 메시지</bold>에 답장하여 할 일을 기록해두세요.",
+    instruction3 : "③ 재사용 시간이 되면 앱에서 <bold>자가 평가</bold>를 수행하세요.\n<bold>알림 메시지</bold>에 답장한 일들을 모두 처리한 후, 다시 절제모드로 돌입하세요.", //바바 3세트
     placeholderQ3 : "예) 어제 찍은 사진 공유하기, 아빠에게 전화하기, 주식 주문하기",
-    qCaution : "6. 시작 전 주의사항 안내:",
+    qCaution : "4. 시작 전 주의사항 안내:", // 바꿔바꿔
     Caution : 
-      "1. 일기(중독탈출) 진행 도중 전화나 중요한 연락을 놓치지 않도록 주의하십시오.\n\n2. 스마트폰 미사용으로 발생할 수 있는 손해(중요 소식, 정보 놓침 등)에 대하여 앱과 제작자는 책임지지 않습니다.\n\n3. 이 앱은 스마트폰 중독에 대한 전문적, 의학적인 치료 수단이 아니며, 중독 치료 효과를 보장하지 못합니다.\n\n4. 스마트폰 재사용 알람을 받기 위해서는 인터넷(네트워크) 연결을 유지하고, 기기 앱 알림을 허용해주세요.\n\n5. 재사용 알람은 부정확할 수 있습니다.\n-. 인터넷 연결상태, OS정책 등의 영향으로 알람 수신이 불가할 수 있음.\n-. 정확한 알람 수신을 위해서는 기기에 자체적으로 내장된 기본 알람 앱을 이용해주세요.",
+      "1. 일기(중독탈출) 진행 도중 전화나 중요한 연락을 놓치지 않도록 주의하세요.\n\n2. 스마트폰 미사용으로 발생할 수 있는 손해에 대하여 앱과 제작자는 책임지지 않습니다.\n\n3. 재사용 알람을 받기 위해서는 앱 알림을 허용해주세요.",
     cautionOk : " 위 주의사항을 읽고 확인했습니다.",
     allowAlarm : "기기 앱 알림 설정하기",
-    todayQ:"5. 오늘의 물음:",
+    noOver500 : '오늘의 물음을 500자 초과하여 작성할 수 없습니다.', // 바꿔바꿔
+    nowTextLength : "현재 글자 수: ", // 바꿔바꿔
   },
   todayRScreen: {
     todayModify : "수정",
@@ -102,23 +118,22 @@ const ko: Translations = {
     keepTrying : '도전 계속하기',
     giveUp : '못 참겠어!!',
     keepGoing : " 오늘 진행중",
-    q1 : "1. 현재 해야 할 일:",
-    q2 : "2. 현재 하고 싶은 일:",
-    qAlarm : "3. 스마트폰 재사용 알람시간:",
-    explainAlarmR : "[안내]\n-. 알람은 5초 간격으로 7회 신호를 보냅니다.\n-. 무음모드 상태에서는 알람음이 울리지 않습니다(진동만 가능).",
+    q1 : "1. 현재 할 일 목록:", // 바꿔바꿔
+    q2 : "2. 오늘의 물음:", // 바꿔바꿔
+    qAlarm : "3. 스마트폰 재사용 목표시간:", //바꿔바꿔
+    explainAlarmR : "알람은 약 30초간 7회 메시지를 보냅니다.", //바꿔바꿔
     timeZone : "알람시간의 기준이 되는 지역(시간대) : ",
     explainZoneChange : "[주의] 이동 중 이신가요?\n알람 기준 지역과 현재 위치하신 지역의 시간대가 다릅니다.\n(시차 가능성 있음)\n현재 위치하신 시간대 기준으로 알람 변경을 원하시면, 일기 수정 - 재시작 해주세요.",
-    explainQ3R : '[안내]\n재사용 알람시간 전에 스마트폰을 쓸 일이 떠올랐다면 아래에 적어두었다가, 재사용 시간에 몰아서 한번에 해결하세요!',
+    explainQ3R : '이번 재사용 시간에 할 일은: ', // 바꿔바꿔
+    noMoreAlarm : "오늘 완료! 설정된 다음 알람이 없습니다.", // 바꿔바꿔
+    noMoreActions : "작성한 내용이 없습니다.\n(잠금화면에서 답장하신 내용이 없어요!)", //바꿔바꿔
   },
   pastScreen: {
     bigTitle : "의\n스마트폰 중독 탈출기",
-    explainScreenTime : "현재 스마트폰 사용 시간을 점검하세요: ",
-    screenTimeLink : "이동",
-    explainLinkFailAnd1 : "사용시간 확인 앱 이동에 실패했습니다.",
-    explainLinkFailAnd2 : "기기 '디지털웰빙' 앱에서 확인해주세요.",
-    explainLinkFailIos1 : "사용시간 확인 앱 이동에 실패했습니다.",
-    explainLinkFailIos2 : "기기 '스크린타임' 앱에서 확인해주세요.",
-    explain2Weeks : "[안내]\n1. 작성한지 2주가 지난 과거 일기는 자동으로 삭제됩니다.\n2. 앱 삭제시 저장된 일기, 친구정보가 모두 삭제됩니다.\n3. 일기 쓰는 걸 깜빡하시나요? 환경설정 탭에서 '일일 알람'을 설정해 보세요!",
+    pastScreenTime : "하루 평균 스마트폰 사용시간(과거 7주)", // 바꿔바꿔
+    weeks: "주차(Weeks)",
+    pastDDScore: "디지털 디톡스 점수(과거 7주)", // 바꿔바꿔
+    explain2Weeks : "작성한지 2주가 지난 과거 일기는 자동으로 삭제됩니다.",
     toTheList : "목록으로",
     deleteDiary : "일기 삭제하기",
     explainDelete : "삭제한 일기는 복구되지 않습니다."
@@ -236,6 +251,10 @@ const ko: Translations = {
     processNo : " 미진행",
     noAlarms : "알람시간: ?",
     yesAlarms : "알람시간: ",
+    todayQAnswer : "오늘의 물음 답변:", //바꿔바꿔
+    favoriteYesBtn : "즐겨찾기됨", // 바꿔바꿔
+    favoriteNoBtn : "즐겨찾기",
+    BanBtn : "삭제", //바꿔바꿔
     explainFriendLimit : "[안내] 친구는 최대 20명까지 추가 가능합니다.\n현재 친구 수: ",
     explainModify : "\n오타에 유의하세요: 닉네임/코드를 잘못 입력시 친구추가는 되지만, 상태가 공유되지 않아요!",
     myRandomId : "내 계정 비밀코드",
@@ -285,6 +304,32 @@ const ko: Translations = {
     invalidFFRequest1 : "오류 발생",
     invalidFFRequest2 : "이 문제가 계속되는 경우 앱을 재시작하거나, 닉네임 변경(초기화) 해주세요.",
   },
+  selfCheckModal: { // 바꿔바꿔
+    todayStart: "일기 시작",
+    needCorrectTime: "올바른 양식(시간, 분)을 입력 해주세요.",
+    selfCheckTitle: "자가평가",
+    askScreenTime: "지난 주 스마트폰 사용 시간을 입력해주세요.",
+    explainIosScreen1: "사용시간 확인 방법:\n1. 기기 '설정' 앱",
+    explainIosScreen2: "에서 '스크린 타임' 메뉴",
+    explainIosScreen3: "로 이동해주세요.",
+    explainIosScreen4: "2. 지난 주 하루 평균 스크린 타임 시간을 찾아서 아래에 입력해주세요.",
+    explainAndScreen1: "사용시간 확인 방법:\n1. 기기 설정",
+    explainAndScreen2: "에서 '디지털 웰빙' 메뉴",
+    explainAndScreen3: "로 이동해주세요.",
+    explainAndScreen4: "2. 지난 주 하루 평균 사용 시간을 찾아서 아래에 입력해주세요.", // 이게 대체 뭐라고 부르냐..
+    goToSetting : "설정으로 이동하기", // 바꿔바꿔
+    time: "시간",
+    minute: "분",
+    save: "저장",
+    from: " 부터", // 쓰기
+    to: " 까지", //띄어
+    askHowManyTimes: "스마트폰을 총 몇 번 사용하셨나요?\n(화면잠금 해제 기준)",
+    timesMore4: "4회 이상",
+    times2or3: "2~3회",
+    times1: "1회",
+    times0: "0회",
+    skip: "평가 미응답(skip)",
+  }, // 모든걸 다바꿔
   errorScreen: {
     title: "헛..! 뭔가가 잘못되었습니다ㅠ.ㅠ",
     friendlySubtitle:
@@ -305,7 +350,7 @@ const ko: Translations = {
     },
     friends: {
       heading: "아직 추가된 친구가 없습니다.",
-      content: "새 친구를 등록하여 서로의 상태를 공유하세요!\n공유하는 정보: 오늘 중독탈출 진행여부, 알람시간 \n(일기 내용은 공유되지 않습니다.)",
+      content: "새 친구를 등록하여 서로의 상태를 공유하세요!",
     },
   },
 

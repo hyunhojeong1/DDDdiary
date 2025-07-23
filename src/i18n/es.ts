@@ -20,7 +20,14 @@ const es: Translations = {
     okISee: "Entendido",
     doIt: "¡Hazlo!",
     errorHappened: "Ha ocurrido un error",
-    tryAgain: "Inténtalo de nuevo."
+    tryAgain: "Inténtalo de nuevo.",
+    Sun: "일", //바꿔라바꿔라
+    Mon: "월",
+    Tue: "화",
+    Wed: "수",
+    Thu: "목",
+    Fri: "금",
+    Sat: "토", //바꿔라바꿔라
   },
   tabs: {
     notifeeNextAlarm: "Próx. hora reutilización:",
@@ -47,10 +54,14 @@ const es: Translations = {
     yourNickname: "2. Apodo (nombre, alias)",
     yourAlarmAllow: "1. Permitir notificaciones",
     explainAlarmAllow: "Para recibir alarmas del diario, activa las notificaciones en la configuración de tu dispositivo. Algunas funciones estarán limitadas si no lo haces.",
+    yourGoogleAds : "3. 광고 개인 맞춤화 선택", // 바꿔바꿔
+    explainGoogleAds : "DDDdiary는 앱 유지비용을 광고로 충당합니다.\n개인 맞춤형 광고 동의 시, 광고 제공업체(구글 Admob사)가 사용자의 이력을 추적하여 개인에 최적화된 광고를 제공합니다.\n거부 시 추적되지 않으며, 일반 무작위 광고가 제공됩니다.", // 바꿔바꿔
     okBtn: "Entendido.\n(Got it.)",
     yourLanguage: "Idioma actual:",
     needYourNickname: "Elige tu apodo:",
     askNickname: "Introduce tu apodo (nombre alternativo o alias).",
+    setDailyAlarm : "일일 알람 설정", // 바꿔바꿔
+    explainDailyAlarm : "매일 일기 작성을 상기시켜주는 알람을 설정해보세요.(선택사항)", // 바꿔바꿔
     letsJoin: "¡Vamos allá!",
     welcomeJoin1: "¡Bienvenido al reto de dejar la adicción!",
     welcomeJoin2: "Escribe tu diario de hoy.",
@@ -61,7 +72,7 @@ const es: Translations = {
   todayWScreen: {
     todayStart: "Inicio",
     needWarningCheck: "Revisión de advertencias requerida",
-    explainWarningCheck: "Por favor, lee las advertencias del punto 6 y haz clic en confirmar.",
+    explainWarningCheck: "Por favor, lee las advertencias del punto 4 y haz clic en confirmar.",
     needWait12: "¡Vaya entusiasmo! Pero...",
     explainWait12: "Debido al cambio de fecha, guardar el diario está bloqueado durante 10 segundos. ¡Espera un momento!",
     writing: " Escribiendo...",
@@ -79,6 +90,7 @@ const es: Translations = {
     explainAlarm: "[Info]\n1. Establece una hora objetivo para volver a usar el teléfono.\n2. Puedes configurar hasta 7 alarmas.\n3. En modo silencioso, no sonará (solo vibración).",
     addAlarmBtn: "Añadir alarma",
     reuseAlarmBtn: "Reutilizar alarma anterior",
+    explainPreAlarmUse : "과거 일기에 사용했던 알람들 중 하나를 선택하세요.", // 바꿔바꿔
     reUseComment: "[Info]\nNo se puede reutilizar la alarma: no hay alarmas de las últimas 2 semanas.",
     warnMaxAlarm: "Error al configurar alarma",
     explainMaxAlarm: "Solo puedes configurar hasta 7 alarmas.",
@@ -90,7 +102,8 @@ const es: Translations = {
     Caution: "1. Asegúrate de no perder llamadas o mensajes importantes durante la sesión del diario (desintoxicación).\n\n2. El desarrollador no se hace responsable de cualquier daño causado por no usar el smartphone (como perder noticias importantes).\n\n3. Esta app no es un tratamiento médico o profesional para la adicción y no garantiza efectos curativos.\n\n4. Para recibir las alarmas, mantén la conexión a internet y activa las notificaciones del dispositivo.\n\n5. Las alarmas pueden no ser precisas.\n- El estado de la red o la política del sistema operativo pueden bloquear o limitar la recepción de las notificaciones.\n- Para alarmas más fiables, usa la app de alarma predeterminada del dispositivo.",
     cautionOk: " He leído y comprendido las advertencias anteriores.",
     allowAlarm: "Configurar notificaciones del dispositivo",
-    todayQ: "5. Pregunta del día:"
+    noOver500 : '오늘의 물음을 500자 초과하여 작성할 수 없습니다.',
+    nowTextLength : "현재 글자 수: ",
   },
   todayRScreen: {
     todayModify: "Editar",
@@ -106,17 +119,16 @@ const es: Translations = {
     explainAlarmR: "[Info]\n-. La alarma suena 7 veces con intervalos de 5 segundos.\n-. En modo silencioso no hay sonido (solo vibración).",
     timeZone: "Zona horaria base para la alarma: ",
     explainZoneChange: "[Atención] ¿Estás en movimiento?\nLa zona horaria actual difiere de la zona base de la alarma.\n(Puede haber diferencia horaria)\nSi deseas ajustar la alarma a tu zona actual, edita y reinicia el diario.",
-    explainQ3R: "[Info]\nSi tienes algo que hacer antes de la hora de reutilización, anótalo aquí y resuélvelo todo junto cuando llegue ese momento."
+    explainQ3R: "[Info]\nSi tienes algo que hacer antes de la hora de reutilización, anótalo aquí y resuélvelo todo junto cuando llegue ese momento.",
+    noMoreAlarm : "오늘 완료! 설정된 다음 알람이 없습니다.", // 바꿔바꿔
+    noMoreActions : "작성한 내용이 없습니다.\n(잠금화면에서 답장하신 내용이 없어요!)", //바꿔바꿔
   },
   pastScreen: {
     bigTitle: " Diario de escape de la adicción al móvil",
-    explainScreenTime : "Revisa tu tiempo de uso actual del móvil: ",
-    screenTimeLink : "Ir",
-    explainLinkFailAnd1 : "No se pudo abrir la app de tiempo de uso.",
-    explainLinkFailAnd2 : "Por favor, revisa en la app “Bienestar digital” del dispositivo.",
-    explainLinkFailIos1 : "No se pudo abrir la app de tiempo de uso.",
-    explainLinkFailIos2 : "Revisa la sección de “Tiempo en pantalla” de tu dispositivo.",
-    explain2Weeks: "[Info]\n 1. Las entradas del diario con más de 2 semanas se eliminan automáticamente.\n 2. Al borrar la app, se eliminarán todos los diarios y datos de amigos guardados.\n3. ¿Olvidas escribir en tu diario? ¡Configura una ‘Alarma diaria’ en la pestaña de Ajustes!",
+    pastScreenTime : "하루 평균 스마트폰 사용시간(과거 7주)", // 바꿔바꿔
+    weeks: "주차(Weeks)",
+    pastDDScore: "디지털 디톡스 점수(과거 7주)", // 바꿔바꿔
+    explain2Weeks: "Las entradas del diario con más de 2 semanas se eliminan automáticamente.",
     toTheList: "Lista",
     deleteDiary: "Eliminar diario",
     explainDelete: "Las entradas eliminadas no se pueden recuperar."
@@ -234,6 +246,10 @@ const es: Translations = {
     processNo: " No en progreso",
     noAlarms: "Hora de alarma: ?",
     yesAlarms: "Hora de alarma: ",
+    todayQAnswer : "오늘의 물음 답변:", //바꿔바꿔
+    favoriteYesBtn : "즐겨찾기됨", // 바꿔바꿔
+    favoriteNoBtn : "즐겨찾기",
+    BanBtn : "삭제", //바꿔바꿔
     explainFriendLimit: "[Info] Puedes añadir hasta 20 amigos.\nAmigos actuales: ",
     explainModify: "\nAtención a errores de escritura: si ingresas mal el apodo o código, se añadirá el amigo pero no se compartirá el estado.",
     myRandomId: "Código secreto de mi cuenta",
@@ -283,6 +299,32 @@ const es: Translations = {
     invalidFFRequest1 : "Se produjo un error.",
     invalidFFRequest2 : "Si este problema persiste, por favor reinicia la aplicación o cambia(restablece) tu apodo.",
   },
+  selfCheckModal: { // 바꿔바꿔
+    todayStart: "일기 시작",
+    needCorrectTime: "올바른 양식(시간, 분)을 입력 해주세요.",
+    selfCheckTitle: "자가평가",
+    askScreenTime: "지난 주 스마트폰 사용 시간을 입력해주세요.",
+    explainIosScreen1: "시간 확인 방법:\n1. 기기 '설정' 앱",
+    explainIosScreen2: "에서 '스크린타임' 메뉴",
+    explainIosScreen3: "로 이동해주세요.",
+    explainIosScreen4: "2. 지난 주 하루 평균 스크린타임 시간을 아래에 입력해주세요.",
+    explainAndScreen1: "시간 확인 방법:\n1. 기기 '설정' 앱",
+    explainAndScreen2: "에서 '디지털 웰빙' 메뉴",
+    explainAndScreen3: "로 이동해주세요.",
+    explainAndScreen4: "2. 지난 주 하루 평균 웰빙웰빙웰빙 시간을 아래에 입력해주세요.", // 이게 대체 뭐라고 부르냐..
+    goToSetting : "설정으로 이동하기", // 바꿔바꿔
+    time: "시간",
+    minute: "분",
+    save: "저장",
+    from: " 부터", // 쓰기
+    to: " 까지", //띄어
+    askHowManyTimes: "스마트폰을 총 몇 번 사용하셨나요?\n(화면잠금 해제 기준)",
+    timesMore4: "4회 이상",
+    times2or3: "2~3회",
+    times1: "1회",
+    times0: "0회",
+    skip: "평가 미응답(skip)",
+  }, // 모든걸 다바꿔
   errorScreen: {
     title: "¡Uy..! Algo salió mal ㅠ.ㅠ",
     friendlySubtitle:
@@ -303,7 +345,7 @@ const es: Translations = {
     },
     friends: {
       heading: "Aún no has añadido amigos.",
-      content: "¡Agrega nuevos amigos para compartir su estado!\nInformación compartida: Progreso de hoy en el diario de desintoxicación, hora de la alarma \n(El contenido del diario no se comparte.)"
+      content: "¡Agrega un nuevo amigo y compartan sus estados!"
     }
   },
 

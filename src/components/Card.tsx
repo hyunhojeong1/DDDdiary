@@ -258,10 +258,10 @@ const $containerBase: ThemedStyle<ViewStyle> = (theme) => ({
   padding: theme.spacing.xs,
   borderWidth: 1,
   shadowColor: theme.colors.palette.neutral800,
-  shadowOffset: { width: 0, height: 12 },
-  shadowOpacity: 0.08,
-  shadowRadius: 12.81,
-  elevation: 16,
+  shadowOffset: { width: 0, height: 3 },
+  shadowOpacity: 0.3,
+  shadowRadius: 3.81,
+  elevation: 2,
   minHeight: 96,
 })
 

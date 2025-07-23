@@ -15,12 +15,14 @@ type MyFriend = {
   myMemo : string
   friendTodayProcess : boolean
   friendAlarms : string
+  friendTodayQAnswer : string
   friendFavorite : boolean
 };
 
 type FFfriend = {
   friendnick : string
   friendAlarms : number[]
+  friendQAnswer : string
 };
 
 const crashlytics = getCrashlytics();
@@ -46,6 +48,7 @@ export const MyFriendStoreModel = types
         myMemo : mymemo,
         friendTodayProcess : false,
         friendAlarms : "",
+        friendTodayQAnswer : "",
         friendFavorite : false,
       });
     },
@@ -72,6 +75,7 @@ export const MyFriendStoreModel = types
               if(friend) {
                 friend.setProp("friendTodayProcess", false);
                 friend.setProp("friendAlarms", "");
+                friend.setProp("friendTodayQAnswer", "");
                 store.addFriendModel(key,friend);
               }
           });
@@ -81,7 +85,7 @@ export const MyFriendStoreModel = types
         recordError(crashlytics, e as Error);
       }
       try{
-        const ffFunction = httpsCallable<unknown, FFfriend[]>(getFunctions(undefined, "asia-northeast3"), 'ffFetchMyFriend');
+        const ffFunction = httpsCallable<unknown, FFfriend[]>(getFunctions(undefined, "asia-northeast3"), 'ffFetchMyFriend2nd');
         const resultArray = await ffFunction();
         resultArray.data.map((friend)=> {
           const myTodayYesFriend = store.MyFriends.get(friend.friendnick);
@@ -89,6 +93,7 @@ export const MyFriendStoreModel = types
             const alarms = friend.friendAlarms.map((time)=> changeTimetoString(changeTimetoLocal(time)) );
             myTodayYesFriend.setProp("friendTodayProcess", true);
             myTodayYesFriend.setProp('friendAlarms', alarms.join(", "));
+            myTodayYesFriend.setProp("friendTodayQAnswer", friend.friendQAnswer);
             store.addFriendModel(friend.friendnick, myTodayYesFriend);
           }
         });
@@ -126,7 +131,7 @@ export const MyFriendStoreModel = types
     async deleteFriend(friendNickRandom : string) {
       const oldFriendsArray = [...Array.from(store.MyFriends.keys())];
       const newFriendsArray = oldFriendsArray.filter(friend => friend !== friendNickRandom);
-      const ffFunction = httpsCallable<unknown, void>(getFunctions(undefined, "asia-northeast3"), 'ffSavingHub');
+      const ffFunction = httpsCallable<unknown, void>(getFunctions(undefined, "asia-northeast3"), 'ffSavingHub2nd');
       await ffFunction({
         hubType : "friends",
         nickrandom : "dolko100000",
@@ -138,7 +143,7 @@ export const MyFriendStoreModel = types
       store.saveMyFriends();
     },
     async deleteAllFriends() {
-      const ffFunction = httpsCallable<unknown, void>(getFunctions(undefined, "asia-northeast3"), 'ffSavingHub');
+      const ffFunction = httpsCallable<unknown, void>(getFunctions(undefined, "asia-northeast3"), 'ffSavingHub2nd');
       await ffFunction({
         hubType : "friends",
         nickrandom : "dolko100000",
@@ -188,7 +193,7 @@ export const MyFriendStoreModel = types
           if(store.getFriendLength() > 0){
             newFriendsArray = [...Array.from(store.MyFriends.keys()), nickRandom];
           }
-          const ffFunction = httpsCallable<unknown, void>(getFunctions(undefined, "asia-northeast3"), 'ffSavingHub');
+          const ffFunction = httpsCallable<unknown, void>(getFunctions(undefined, "asia-northeast3"), 'ffSavingHub2nd');
           await ffFunction({
             hubType : "friends",
             nickrandom : "dolko100000",

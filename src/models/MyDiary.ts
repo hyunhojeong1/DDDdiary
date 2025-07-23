@@ -13,7 +13,8 @@ export const MyDiaryModel = types
     cautionCheck : types.optional(types.boolean, false),
     dailyQuestion : "",
     alarms : types.optional(types.array(types.string), <string[]>[]),
-    alarmsZone : "", 
+    alarmsZone : "",
+    dayInWeek : "",
   })
   .actions(withSetPropAction)
 

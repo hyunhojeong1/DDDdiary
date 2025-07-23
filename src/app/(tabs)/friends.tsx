@@ -1,6 +1,6 @@
 import { Button, Card, EmptyState, Header, ListView, Screen, Text, TextField } from "@/components";
 import { useStores } from "@/models";
-import { ThemedStyle } from "@/theme";
+import { spacing, ThemedStyle } from "@/theme";
 import { useAppTheme } from "@/utils/useAppTheme";
 import { observer } from "mobx-react-lite";
 import { useEffect, useRef, useState } from "react";
@@ -10,6 +10,9 @@ import { BannerAd, BannerAdSize, TestIds, useForeground } from "react-native-goo
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import * as Haptics from 'expo-haptics';
 import { checkInternetConnection } from "@/utils/network";
+import SelfAssessmentModal from "../selfCheckModal";
+import Feather from '@expo/vector-icons/Feather';
+import { Menu, Divider } from 'react-native-paper';
 
 
 const adUnitId_Test = TestIds.BANNER;
@@ -31,6 +34,10 @@ export default observer(function Friends() {
   const [mymemo, setMymemo] = useState("");
   const [isSaved, setIsSaved] = useState(true);
   const [isDeleted, setIsDeleted] = useState(true);
+
+  const [moreBtnKey, setmoreBtnKey] = useState("");
+  const openMenu = (friend : string) => setmoreBtnKey(friend);
+  const closeMenu = () => setmoreBtnKey("");
 
 
   const bannerRef = useRef<BannerAd>(null);
@@ -72,13 +79,8 @@ export default observer(function Friends() {
 
   const handleToggleFavorite = (nickrandomId : string) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    if(myFriendStore.MyFriends.get(nickrandomId)?.friendFavorite === false){
-      Alert.alert(
-        t("friendScreen:explainFavorite"),
-        t("friendScreen:explainFavorite2")
-      );
-    }
     myFriendStore.toggleFavorite(nickrandomId);
+    closeMenu();
   };
 
   const handleDeleteFriend = async (nickrandomId : string) => {
@@ -96,9 +98,11 @@ export default observer(function Friends() {
           try {
             await myFriendStore.deleteFriend(nickrandomId);
             setIsDeleted(true);
+            closeMenu();
           } catch (e) {
             Alert.alert(t('settingScreen:invalidFFRequest1'), t('settingScreen:invalidFFRequest2'));
             setIsDeleted(true);
+            closeMenu();
           }
       }}]
     );
@@ -137,6 +141,7 @@ export default observer(function Friends() {
       setIsSaved(true);
     }
   };
+
 
   return (
     <Screen 
@@ -213,36 +218,52 @@ export default observer(function Friends() {
                 ContentComponent={
                   item.friendTodayProcess ?
                     <View style={{flexDirection:"row", alignItems:'center'}}>
-                      <FontAwesome name="circle" size={10} color="#00aa00" />
+                      <FontAwesome name="circle" size={spacing.sm} color="#00aa00" />
                       <Text tx="friendScreen:processYes" />
                     </View>
                   :
                     <View style={{flexDirection:"row", alignItems:'center'}}>
-                      <FontAwesome name="circle" size={10} color="#999999" />
+                      <FontAwesome name="circle" size={spacing.sm} color="#999999" />
                       <Text tx="friendScreen:processNo" />
                     </View>
                 }
-                footer={item.friendAlarms === "" ? t('friendScreen:noAlarms') : `${t('friendScreen:yesAlarms')}${item.friendAlarms}`}
-                LeftComponent={
-                  <View>
-                    <Button 
-                      LeftAccessory={()=>(
-                        item.friendFavorite ?
-                        <FontAwesome name="star" size={19} color="gold" /> : <FontAwesome name="star" size={17} color="#999999" />
-                      )}
-                      onPress={()=>handleToggleFavorite(item.friendNickRandom)}
-                      style={themed($listItemBtn)}
-                    />
-                    <Button
-                      RightAccessory={()=>(
-                        isDeleted ? 
-                          <FontAwesome name="ban" size={19} color="#999999" />
-                          : <View><ActivityIndicator size={"small"} /></View>
-                      )}
-                      onPress={()=>handleDeleteFriend(item.friendNickRandom)}
-                      style={themed($listItemBtn)}
-                    />
-                  </View>
+                footer={
+                  item.friendAlarms === "" ? 
+                    `${t('friendScreen:noAlarms')}\n${t('friendScreen:todayQAnswer')}${item.friendTodayQAnswer}`
+                  : `${t('friendScreen:yesAlarms')}${item.friendAlarms}\n${t('friendScreen:todayQAnswer')}${item.friendTodayQAnswer}`
+                }
+                footerStyle={themed($cardFooterContainer)}
+                RightComponent={
+                    <View>
+                      <Menu
+                        contentStyle={{backgroundColor : '#fff'}}
+                        visible={item.friendNickRandom === moreBtnKey}
+                        onDismiss={closeMenu}
+                        anchor={<Button style={themed($moreButton)} onPress={()=>openMenu(item.friendNickRandom)}><Feather name="more-vertical" size={spacing.md} color="gray" /></Button>}>
+                        <Menu.Item
+                          containerStyle={{alignItems : 'center'}}
+                          onPress={() => handleToggleFavorite(item.friendNickRandom)} 
+                          title={
+                            item.friendFavorite ?
+                            t('friendScreen:favoriteYesBtn') : t('friendScreen:favoriteNoBtn')
+                          }
+                          leadingIcon={()=>(
+                            item.friendFavorite ?
+                            <FontAwesome name="star" size={spacing.lg} color="gold" /> : <FontAwesome name="star" size={spacing.lg} color="#999999" />
+                          )}
+                        />
+                        <Menu.Item
+                          containerStyle={{alignItems : 'center'}}
+                          onPress={() => handleDeleteFriend(item.friendNickRandom)}
+                          title={t('friendScreen:BanBtn')}
+                          leadingIcon={()=>(
+                            isDeleted ? 
+                              <FontAwesome name="ban" size={spacing.lg} color="#999999" />
+                              : <View><ActivityIndicator size={"small"} /></View>
+                          )}
+                        />
+                      </Menu>
+                    </View>
                 }
               />
             )}
@@ -348,13 +369,16 @@ export default observer(function Friends() {
           </ScrollView>
         </Screen>
       }
+      <SelfAssessmentModal
+        visible={myStatusStore.needSelfCheck && myStatusStore.todayProcess}
+      />
     </Screen>
   )
 })
 
 const $container: ThemedStyle<ViewStyle> = ({ colors }) => ({
   flex: 1,
-  backgroundColor: colors.palette.neutral150,
+  backgroundColor: colors.tabBackground,
 })
 
 const $header: ThemedStyle<ViewStyle> = ({ colors }) => ({
@@ -369,7 +393,7 @@ const $headerBtn: ThemedStyle<ViewStyle> = ({ colors }) => ({
 })
 
 const $adContainer: ThemedStyle<ViewStyle> = ({ colors }) => ({
-  backgroundColor: colors.palette.neutral150,
+  backgroundColor: colors.tabBackground,
   alignItems : 'center',
   borderBottomColor : colors.border,
   borderBottomWidth : 1,
@@ -380,14 +404,14 @@ const $actIndicatorContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 })
 
 const $noticeContainer: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
-  backgroundColor: colors.palette.neutral150,
+  backgroundColor: colors.tabBackground,
   borderRadius : 0,
   borderWidth : 0,
   padding : spacing.xs,
 })
 
 const $emptyStatePage: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
-  backgroundColor: colors.palette.neutral150,
+  backgroundColor: colors.tabBackground,
   paddingBottom : spacing.xxxl,
 })
 
@@ -406,21 +430,28 @@ const $friendMemoText: ThemedStyle<TextStyle> = ({ spacing, }) => ({
   fontSize : spacing.md,
 })
 
-const $listItemCard: ThemedStyle<ViewStyle> = ({ colors }) => ({
+const $listItemCard: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   backgroundColor: colors.tabBackground,
   borderRadius : 0,
   borderWidth : 0,
-  borderBottomWidth : 1,
+  borderBottomWidth : 0.5,
+  borderTopWidth : 0.5,
   borderColor : colors.separator,
+  paddingLeft : spacing.sm,
 })
 
-const $listItemBtn: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
-  backgroundColor: colors.palette.neutral100,
-  minHeight : 0,
-  minWidth : 0,
-  margin : spacing.xxxs,
-  borderWidth : 1,
-  borderColor : colors.separator,
+const $cardFooterContainer: ThemedStyle<TextStyle> = ({}) => ({
+  width : '107%',
+})
+
+const $moreButton: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  backgroundColor: colors.tabBackground,
+  paddingLeft : 0,
+  paddingBottom : 0,
+  paddingTop: 0,
+  paddingRight: 0,
+  borderRadius : 0,
+  borderWidth : 0,
 })
 
 const $subheadingText: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({

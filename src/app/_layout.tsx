@@ -9,13 +9,14 @@ import { ErrorBoundary } from "./_layout"
 import 'react-native-reanimated'
 import 'react-native-gesture-handler'
 import { getAuth, onAuthStateChanged, signInAnonymously } from '@react-native-firebase/auth';
-import mobileAds, { AdsConsent, MaxAdContentRating } from 'react-native-google-mobile-ads';
-import {getTrackingPermissionsAsync, PermissionStatus, requestTrackingPermissionsAsync} from 'expo-tracking-transparency';
+// import mobileAds, { AdsConsent, MaxAdContentRating } from 'react-native-google-mobile-ads';
+// import {getTrackingPermissionsAsync, PermissionStatus, requestTrackingPermissionsAsync} from 'expo-tracking-transparency';
 import { getCrashlytics, log, recordError } from "@react-native-firebase/crashlytics"
 import getAppCheck, { initializeAppCheck } from "@react-native-firebase/app-check";
 import { getApp } from "@react-native-firebase/app"
 import { checkInternetConnection } from "@/utils/network"
 import { Alert } from "react-native"
+import { PaperProvider } from "react-native-paper"
 
 
 SplashScreen.preventAutoHideAsync();
@@ -45,7 +46,7 @@ export default function Root() {
   const [isInternetReady, setIsInternetReady] = useState(false);
 
   //adMob
-  const isMobileAdsStartCalledRef = useRef(false);
+  // const isMobileAdsStartCalledRef = useRef(false);
   
 
   useEffect(()=> {
@@ -83,39 +84,39 @@ export default function Root() {
     });
   },[retryInternetCheck]);
 
-  useEffect(() => {
-    AdsConsent.gatherConsent()
-      .then(startGoogleMobileAdsSDK)
-      .catch((error) => {
-          const crashlytics = getCrashlytics();
-          log(crashlytics, 'Admob Consent Error');
-          recordError(crashlytics, error as Error);
-        });
-    startGoogleMobileAdsSDK();
-  }, [retryInternetCheck]);
+  // useEffect(() => {
+  //   AdsConsent.gatherConsent()
+  //     .then(startGoogleMobileAdsSDK)
+  //     .catch((error) => {
+  //         const crashlytics = getCrashlytics();
+  //         log(crashlytics, 'Admob Consent Error');
+  //         recordError(crashlytics, error as Error);
+  //       });
+  //   startGoogleMobileAdsSDK();
+  // }, [retryInternetCheck]);
    
-  async function startGoogleMobileAdsSDK() {
-    const {canRequestAds} = await AdsConsent.getConsentInfo();
-    if (!canRequestAds || isMobileAdsStartCalledRef.current) {
-      return;
-    }
-    isMobileAdsStartCalledRef.current = true;
-    const gdprApplies = await AdsConsent.getGdprApplies();
-    const hasConsentForPurposeOne = gdprApplies && (await AdsConsent.getPurposeConsents()).startsWith("1");
-    if (!gdprApplies || hasConsentForPurposeOne) {
-      const { status } = await getTrackingPermissionsAsync();
-      if (status === PermissionStatus.UNDETERMINED) {
-        await requestTrackingPermissionsAsync();
-      }
-    }
-    await mobileAds().setRequestConfiguration({
-      maxAdContentRating : MaxAdContentRating.T,
-      tagForChildDirectedTreatment : false,
-      tagForUnderAgeOfConsent : false,
-      testDeviceIdentifiers : ['EMULATOR'],
-    });
-    mobileAds().initialize();
-  }
+  // async function startGoogleMobileAdsSDK() {
+  //   const {canRequestAds} = await AdsConsent.getConsentInfo();
+  //   if (!canRequestAds || isMobileAdsStartCalledRef.current) {
+  //     return;
+  //   }
+  //   isMobileAdsStartCalledRef.current = true;
+  //   const gdprApplies = await AdsConsent.getGdprApplies();
+  //   const hasConsentForPurposeOne = gdprApplies && (await AdsConsent.getPurposeConsents()).startsWith("1");
+  //   if (!gdprApplies || hasConsentForPurposeOne) {
+  //     const { status } = await getTrackingPermissionsAsync();
+  //     if (status === PermissionStatus.UNDETERMINED) {
+  //       await requestTrackingPermissionsAsync();
+  //     }
+  //   }
+  //   await mobileAds().setRequestConfiguration({
+  //     maxAdContentRating : MaxAdContentRating.T,
+  //     tagForChildDirectedTreatment : false,
+  //     tagForUnderAgeOfConsent : false,
+  //     testDeviceIdentifiers : ['EMULATOR'],
+  //   });
+  //   mobileAds().initialize();
+  // }
 
   useEffect(()=> {
     const auth = getAuth();
@@ -157,7 +158,9 @@ export default function Root() {
       <ThemeProvider value={{ themeScheme, setThemeContextOverride }}>
           <KeyboardProvider>
             <ErrorBoundary catchErrors="always">
-              <Slot />
+              <PaperProvider>
+                <Slot />
+              </PaperProvider>
             </ErrorBoundary>
           </KeyboardProvider>
       </ThemeProvider>

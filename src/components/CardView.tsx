@@ -39,16 +39,17 @@ export function CardView(props: CardViewProps) {
 
 const $containerBase: ThemedStyle<ViewStyle> = (theme) => ({
   borderRadius: theme.spacing.md,
-  padding: theme.spacing.xs,
   borderWidth: 1,
   shadowColor: theme.colors.palette.neutral800,
-  shadowOffset: { width: 0, height: 12 },
-  shadowOpacity: 0.08,
-  shadowRadius: 12.81,
-  elevation: 16,
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.03,
+  shadowRadius: 3.81,
+  elevation: 2,
   minHeight: 192,
   marginTop : theme.spacing.xs,
   marginHorizontal : theme.spacing.xs,
+  paddingLeft : theme.spacing.sm,
+  paddingRight : theme.spacing.sm,
 })
 
 const $containerPresets: Record<Presets, ThemedStyleArray<ViewStyle>> = {

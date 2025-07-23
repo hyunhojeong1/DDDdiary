@@ -47,6 +47,12 @@ export default observer(function PastTabLayout() {
             tx="todayRScreen:q2"
             preset="subheading"
           />
+          <Text>Q: [ "
+          <Text
+            text={t(`dailyQuestion:${myStatusStore.myDiaries.get(diaryKeyDate)?.dailyQuestion}`)}
+            style={themed($pastDailyQuestionText)}
+          />" ]
+          </Text>
           <Text
             text={myStatusStore.myDiaries.get(diaryKeyDate)?.text2}
             style={themed($pastAnswerText)}
@@ -81,22 +87,6 @@ export default observer(function PastTabLayout() {
               ))}
             </CardView>
           </View>
-          <Text
-            tx="todayWScreen:q3"
-            preset="subheading"
-          />
-          <Text
-            text={myStatusStore.myDiaries.get(diaryKeyDate)?.text3}
-            style={themed($pastAnswerText)}
-          />
-          <Text
-            tx="todayWScreen:todayQ"
-            preset="subheading"
-          />
-          <Text
-            text={t(`dailyQuestion:${myStatusStore.myDiaries.get(diaryKeyDate)?.dailyQuestion}`)}
-            style={themed($pastDailyQuestionText)}
-          />      
         </Screen>
       </ScrollView>
     </Screen>
@@ -127,7 +117,7 @@ const $alarmBox: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   flex : 1,
   paddingTop : spacing.sm,
   minHeight : 100,
-  backgroundColor : colors.palette.neutral200,
+  backgroundColor : colors.tabBackground,
 })
 
 const $alarmTime: ThemedStyle<ViewStyle> = ({ spacing }) => ({

@@ -32,6 +32,7 @@ export const MyStatusStoreModel = types
     todayISODate : "",
     todayNDate : types.optional(types.number, 0),
     past14NDate : types.optional(types.number, 0),
+    todayDayInWeek : "",
     todayProcess : types.optional(types.boolean, false),
     todayAlarmLastTopic : types.optional(types.array(types.string),<string[]>[]), // Ex. [20250504745, ..]
     myDiaries: types.map(MyDiaryModel),
@@ -40,6 +41,16 @@ export const MyStatusStoreModel = types
     admobOn : types.optional(types.boolean, false),
     somethingChanged : false,
     fetchedNextAlarm : "",
+    selfCheckScore7Weeks : types.optional(types.array(types.number),<number[]>[0,0,0,0,0,0,0]),
+    selfCheckScoreWeek : types.optional(types.number, 0),
+    needSelfCheck : false,
+    lastSelfCheckTime : "",
+    androidYesFNAT : false, // 안드로이드에서 일기 시작이나, 평가 완료(시간 변경) 후에만 다음 시간 불러오기를 허가하는 스위치
+    screenTime7Weeks : types.optional(types.array(types.number),<number[]>[0,0,0,0,0,0,0]),
+    needScreenTime : false,
+    lastRecordWeek : types.optional(types.number, 0),
+    fullfillCheckDate : types.optional(types.number, 0), // 날짜 바뀔 시 해당 날짜로 변경. 초기 100점 주기용. 0으로 바꾸지 말라.
+    fullfillCheckAlarms : 0, //백그라운드 상태될 때 남은 알람 수 카운트
   })
   .actions(withSetPropAction)
   .actions((store) => ({
@@ -49,14 +60,15 @@ export const MyStatusStoreModel = types
     unModelOneDiary(diaryNDate : number) {
       store.myDiaries.delete(diaryNDate.toString());
     },
-    async dateRenewal() {
-      const { dateISO, fulldate, past14Date, currentTimeZone, currentTimeZoneMinutes } = getCurrentDate();
+    async dateRenewal() { // 여기서 save mystatus는 지양한다.
+      const { dateISO, fulldate, past14Date, currentTimeZone, currentTimeZoneMinutes, weekday } = getCurrentDate();
       store.setProp("todayISODate", dateISO);
       store.setProp("todayNDate", fulldate);
       store.setProp("past14NDate", past14Date);
+      store.setProp("todayDayInWeek", weekday);
       if(store.timeZone !== currentTimeZone) {
-        try{  // function 실패 시 다음에 다시 try
-          const ffFunction = httpsCallable<unknown, void>(getFunctions(undefined, "asia-northeast3"), 'ffSavingHub');
+        try{
+          const ffFunction = httpsCallable<unknown, void>(getFunctions(undefined, "asia-northeast3"), 'ffSavingHub2nd');
           await ffFunction({
             hubType : "timezone",
             nickrandom : "dolko100000",
@@ -118,7 +130,7 @@ export const MyStatusStoreModel = types
       if(auth.currentUser?.uid){
         try{
           store.setProp("guid", auth.currentUser.uid);
-          const ffFunction = httpsCallable<unknown, void>(getFunctions(undefined, "asia-northeast3"), 'ffSavingHub');
+          const ffFunction = httpsCallable<unknown, void>(getFunctions(undefined, "asia-northeast3"), 'ffSavingHub2nd');
           await ffFunction({
             hubType : "join",
             nickrandom : nickRandomId,
@@ -139,15 +151,13 @@ export const MyStatusStoreModel = types
     },
     get preUsedTodoList() {
       const values = Array.from(store.myDiaries.values())
-        .filter((value)=> (value.text1.length + value.text2.length) > 4 && value.diaryNDate !== store.todayNDate)
+        .filter((value)=> value.text1.length > 2 && value.diaryNDate !== store.todayNDate)
         .sort((a,b)=> b.diaryNDate - a.diaryNDate);
       let lastTodoText1 = "";
-      let lastTodoText2 = "";
       if(values.length !== 0){
         lastTodoText1 = values[0].text1;
-        lastTodoText2 = values[0].text2;
       }
-      return {lastTodoText1, lastTodoText2};
+      return {lastTodoText1};
     },
     get preUsedAlarms() {
       const values = Array.from(store.myDiaries.values())
@@ -155,7 +165,7 @@ export const MyStatusStoreModel = types
         .sort((a,b)=> b.diaryNDate - a.diaryNDate);
       if(values.length !== 0){
         const preAlarms = values.map((value)=> {
-          return [value.diaryNDate.toString(), ...value.alarms];
+          return [value.diaryNDate.toString(), `common:${value.dayInWeek}`, ...value.alarms];
         })
         return preAlarms;
       } else {
@@ -175,14 +185,17 @@ export const MyStatusStoreModel = types
       await store.dateRenewal();
       await save("myStatus", store);
     },
-    async saveTodayDiary(alarms : string[], shareCheck : boolean) {
+    async saveTodayDiary(alarms : string[], shareCheck : boolean, text2 : string) {
       await store.dateRenewal();
       const sortedAlarms = alarms.filter(alarm => changeTimetoNumber(alarm).timeNumber > getCurrentDate().currentTimeNumber);
       let numAlarms : number[] = [];
       numAlarms = sortedAlarms.map((value)=> {
         return changeTimetoUTC(changeTimetoNumber(value).timeNumber);
       });
-      if(!shareCheck) {numAlarms = [];}
+      let todayQAnswer = text2;
+      if(!shareCheck) {
+        numAlarms = [];
+      }
 
       let stringAlarms : string[] = [];
       stringAlarms = sortedAlarms.map((value) => {
@@ -194,17 +207,37 @@ export const MyStatusStoreModel = types
       const needReserveTopics = store.todayAlarmLastTopic.filter(alarm => stringAlarms.includes(alarm));
 
       try{
-        const ffFunction = httpsCallable<unknown, boolean>(getFunctions(undefined, "asia-northeast3"), 'ffSubscribeFCM');
+        const ffFunction = httpsCallable<unknown, boolean>(getFunctions(undefined, "asia-northeast3"), 'ffSubscribeFCM2nd');
         const resultBooly = await ffFunction({
           hubType : "startDiary",
           todayprocess : true,
           todayalarms : numAlarms,
+          todayQAnswer : todayQAnswer,
           fcmToken : store.fcmToken,
           newTopics : newAddTopics, // 이미 구독한 알람은 제외하고 전달
           lastTopics : needDeleteTopics, // 새알람 제외한 기존 구독 알람을 제거
         });
         if(resultBooly.data) {
           store.setProp("todayAlarmLastTopic", [...needReserveTopics, ...newAddTopics]);
+          store.setProp("androidYesFNAT", true);
+
+          if(store.todayNDate !== store.fullfillCheckDate) { // 어제 정산 감점, 초기 100점, numalarm length가 0이면 초기 70점, 일기 취소시 lastself가 ""이면 50점 감점
+            store.setProp("fullfillCheckDate", store.todayNDate); // 이후 당일엔 절대 바꿀 수 없다.
+            store.setProp("fetchedNextAlarm", "");
+            store.setProp("lastSelfCheckTime", ""); // 필수로 if문 안쪽(점수 정확성)
+            store.setProp("needSelfCheck", false);
+
+            let nowScore = store.selfCheckScoreWeek;
+            nowScore = nowScore - 10*(store.fullfillCheckAlarms);
+            if (nowScore < 0) {nowScore = 0;}
+
+            if(numAlarms.length === 0) {
+              nowScore = nowScore + 70;
+            } else {
+              nowScore = nowScore + 100;
+            }
+            store.setProp("selfCheckScoreWeek", nowScore);
+          }
           return true;
         } else {
           return false;
@@ -226,11 +259,12 @@ export const MyStatusStoreModel = types
       if(diaryNDate === store.todayNDate){
         try{
           const needDeleteTopics = [...store.todayAlarmLastTopic];
-          const ffFunction = httpsCallable<unknown, boolean>(getFunctions(undefined, "asia-northeast3"), 'ffSubscribeFCM');
+          const ffFunction = httpsCallable<unknown, boolean>(getFunctions(undefined, "asia-northeast3"), 'ffSubscribeFCM2nd');
           const resultBooly = await ffFunction({
             hubType : "removeDiary",
             todayprocess : false,
             todayalarms : [],
+            todayQAnswer: "",
             fcmToken : store.fcmToken,
             newTopics : [],
             lastTopics : needDeleteTopics, // array 형태 MST tree 추적 유의
@@ -238,6 +272,16 @@ export const MyStatusStoreModel = types
           if(resultBooly.data) {
             store.unModelOneDiary(diaryNDate);
             store.setProp("todayAlarmLastTopic", []);
+            store.setProp("androidYesFNAT" , false);
+            store.setProp("fullfillCheckAlarms", 0); // 폰해방이 비로소 의미를 갖게 되었다. 추가감점요소 제거
+            // store.setProp("fullfillCheckDate", 0); 이거 취소 시작마다 100점씩 계속 줄 일 있냐? 정신차려!
+
+            let nowScore = store.selfCheckScoreWeek;
+            if (store.lastSelfCheckTime === "") {
+              nowScore = nowScore - 50;
+              if (nowScore < 0) {nowScore = 0;}
+            }
+            store.setProp("selfCheckScoreWeek", nowScore);
             const response = await save("myStatus", store);
             if(response) { return true; }
             else { return false; }
@@ -271,11 +315,12 @@ export const MyStatusStoreModel = types
         let lastTopic : string[] = [];
         if(store.userDAlarmLastTopic !== "") {lastTopic = [store.userDAlarmLastTopic];}
         try {
-          const ffFunction = httpsCallable<unknown, boolean>(getFunctions(undefined, "asia-northeast3"), 'ffSubscribeFCM');
+          const ffFunction = httpsCallable<unknown, boolean>(getFunctions(undefined, "asia-northeast3"), 'ffSubscribeFCM2nd');
           const resultBooly = await ffFunction({
             hubType : "dailyAlarmOn",
             todayprocess : true,
             todayalarms : [],
+            todayQAnswer: "",
             fcmToken : store.fcmToken,
             newTopics : [fcmTopic],
             lastTopics : lastTopic,
@@ -294,11 +339,12 @@ export const MyStatusStoreModel = types
         }
       } else {
         try {
-          const ffFunction = httpsCallable<unknown, boolean>(getFunctions(undefined, "asia-northeast3"), 'ffSubscribeFCM');
+          const ffFunction = httpsCallable<unknown, boolean>(getFunctions(undefined, "asia-northeast3"), 'ffSubscribeFCM2nd');
           const resultBooly = await ffFunction({
             hubType : "dailyAlarmOff",
             todayprocess : true,
             todayalarms : [],
+            todayQAnswer: "",
             fcmToken : store.fcmToken,
             newTopics : [],
             lastTopics : [store.userDAlarmLastTopic],
@@ -334,6 +380,16 @@ export const MyStatusStoreModel = types
         store.setProp("fcmToken", response.fcmToken);
         store.setProp("admobOn", response.admobOn);
         store.setProp("fetchedNextAlarm", response.fetchedNextAlarm);
+        store.setProp("selfCheckScore7Weeks", response.selfCheckScore7Weeks);
+        store.setProp("selfCheckScoreWeek", response.selfCheckScoreWeek);
+        store.setProp("needSelfCheck", response.needSelfCheck);
+        store.setProp("lastSelfCheckTime", response.lastSelfCheckTime);
+        store.setProp("androidYesFNAT", response.androidYesFNAT);
+        store.setProp("screenTime7Weeks", response.screenTime7Weeks);
+        store.setProp("needScreenTime", response.needScreenTime);
+        store.setProp("lastRecordWeek", response.lastRecordWeek);
+        store.setProp("fullfillCheckDate", response.fullfillCheckDate);
+        store.setProp("fullfillCheckAlarms", response.fullfillCheckAlarms);
         await store.dateRenewal();
         store.setTodayProcess();
         store.setTodayQuestion();
@@ -353,11 +409,12 @@ export const MyStatusStoreModel = types
     async unsubscribeFCMDefault() {
       if(store.somethingChanged || store.todayProcess || store.todayAlarmLastTopic.length === 0) return;
       try {
-        const ffFunction = httpsCallable<unknown, boolean>(getFunctions(undefined, "asia-northeast3"), 'ffSubscribeFCM');
+        const ffFunction = httpsCallable<unknown, boolean>(getFunctions(undefined, "asia-northeast3"), 'ffSubscribeFCM2nd');
         const resultBooly = await ffFunction({
           hubType : "defaultUnsubscribe",
           todayprocess : true,
           todayalarms : [],
+          todayQAnswer: "",
           fcmToken : store.fcmToken,
           newTopics : [],
           lastTopics : [],
@@ -384,7 +441,7 @@ export const MyStatusStoreModel = types
     },
     async resetInitialReady() {
       try{
-        const ffFunction = httpsCallable<unknown, void>(getFunctions(undefined, "asia-northeast3"), 'ffSavingHub');
+        const ffFunction = httpsCallable<unknown, void>(getFunctions(undefined, "asia-northeast3"), 'ffSavingHub2nd');
         await ffFunction({
           hubType : "initialReady",
           nickrandom : "dolko100000",
@@ -406,44 +463,27 @@ export const MyStatusStoreModel = types
       store.myDiaries.set(fulldate.toString(), contents);
       await save("myStatus", store);
     },
-    async fetchNextAlarmFCM(nowAlarms : string[]) { // dateRenewal 제거 -> 방식 바뀌어서 안 쓴다.
-      const sortedAlarms = nowAlarms.filter(alarm => changeTimetoNumber(alarm).timeNumber > getCurrentDate().currentTimeNumber);
-      if (sortedAlarms.length === 0 || store.fcmToken === "") {
-        store.setProp("fetchedNextAlarm", "");
-        await save("myStatus", store);
-        return;
-      } else if (sortedAlarms[0] !== store.fetchedNextAlarm) {
-        try {
-          const ffFunction = httpsCallable<unknown, void>(getFunctions(undefined, "asia-northeast3"), 'ffFetchNextAlarmFCM');
-          store.setProp("fetchedNextAlarm", sortedAlarms[0]);
-          // await ffFunction({
-          //   nextAlarm : sortedAlarms[0],
-          //   fcmToken : store.fcmToken,
-          //   userCLang : store.userCLang
-          // });
-          await save("myStatus", store);
-        } catch (e) {
-          log(crashlytics, 'Firebase - fetchNextAlarmFCM Error');
-          recordError(crashlytics, e as Error);
-        }
-      }
-    },
-    async fetchNextAlarmTime() {
+    async fetchNextAlarmTime() { // 백그라운드 전환 시에만 발동 업뎃하는 것. 포어그라운드에서 다음 알람 정보를 원할땐 이 Prop을 사용하면 안된다.
       const response = store.myDiaries.get(store.todayNDate.toString());
       if (response) {
         const nowAlarms = [...response.alarms];
         if (nowAlarms.length > 0) {
           const sortedAlarms = nowAlarms.filter(alarm => changeTimetoNumber(alarm).timeNumber > getCurrentDate().currentTimeNumber);
-          if (sortedAlarms.length === 0 || store.fcmToken === "") {
+          store.setProp("fullfillCheckAlarms", sortedAlarms.length);
+          if (sortedAlarms.length === 0) {
             store.setProp("fetchedNextAlarm", "");
             await save("myStatus", store);
             return "noMoreAlarm";
           } else if (sortedAlarms[0] !== store.fetchedNextAlarm) {
+            if (!store.androidYesFNAT) {
+              return "noMoreAlarm";
+            }
+            store.setProp("androidYesFNAT", !store.androidYesFNAT);
             store.setProp("fetchedNextAlarm", sortedAlarms[0]);
             await save("myStatus", store);
             return sortedAlarms[0];
           } else if (sortedAlarms[0] === store.fetchedNextAlarm) {
-            return "noMoreAlarm";
+            return sortedAlarms[0];
           }
         }
       }
@@ -467,6 +507,7 @@ export const MyStatusStoreModel = types
           dailyQuestion : response.dailyQuestion,
           alarms : [...response.alarms], // MST 추적 끊기
           alarmsZone : response.alarmsZone,
+          dayInWeek : response.dayInWeek,
         };
         store.modelOneDiary(response.diaryNDate, contents);
         if(store.todayProcess) { // 수정 중 아닐 때만 값 저장, 충돌 방지 목적
@@ -474,6 +515,59 @@ export const MyStatusStoreModel = types
         }
       }
       await AsyncStorage.removeItem('@lockscreen_reply');
+    },
+    async preSelfCheck() {
+      const response = store.myDiaries.get(store.todayNDate.toString());
+      if (response) {
+        const nowAlarms = [...response.alarms];
+        if (nowAlarms.length > 0) {
+          const sortedAlarms = nowAlarms.filter(alarm => changeTimetoNumber(alarm).timeNumber <= getCurrentDate().currentTimeNumber // 정확히 알람 시간이면 안 잡힌다.
+            && changeTimetoNumber(alarm).timeNumber >= changeTimetoNumber(store.fetchedNextAlarm).timeNumber);
+
+          if(sortedAlarms.length > 0) {
+            const nowDate = new Date();
+            const lastWeekMonday = new Date(nowDate);
+            const thisWeekMonday = new Date(nowDate);
+            const weekdayIndex = nowDate.getDay();
+            if (weekdayIndex > 0) {
+              const gapBetweenMonday  = weekdayIndex - 1;
+              lastWeekMonday.setDate(lastWeekMonday.getDate()-7-gapBetweenMonday);
+              thisWeekMonday.setDate(thisWeekMonday.getDate()-gapBetweenMonday);
+              const lastMondayFulldate = 10000*(lastWeekMonday.getFullYear()-2000) + 100*(lastWeekMonday.getMonth()+1) + lastWeekMonday.getDate();
+              const thisMondayFulldate = 10000*(thisWeekMonday.getFullYear()-2000) + 100*(thisWeekMonday.getMonth()+1) + thisWeekMonday.getDate();
+
+              if(store.lastRecordWeek >= lastMondayFulldate) { // <= 로 바꾸기
+                store.setProp("needScreenTime", true);
+                const screen7Weeks = [...store.screenTime7Weeks];
+                const newArrScreen = screen7Weeks.slice(1);
+                const newArrScreen2 = [...newArrScreen, 0];
+                store.setProp("screenTime7Weeks", newArrScreen2);
+
+                const score7Weeks = [...store.selfCheckScore7Weeks];
+                const newArr = score7Weeks.slice(1);
+                const newArr2 = [...newArr, store.selfCheckScoreWeek];
+                store.setProp("selfCheckScore7Weeks", newArr2);
+                store.setProp("lastRecordWeek", thisMondayFulldate);
+                store.setProp("selfCheckScoreWeek", 0);
+              }
+            }
+            let nowScore = store.selfCheckScoreWeek;
+            nowScore = nowScore - 10*sortedAlarms.length; // 일단 까고 자가참여 응답하면 10점 준다.
+            if (nowScore < 0) {nowScore = 0;}
+            store.setProp("selfCheckScoreWeek", nowScore);
+            store.setProp("needSelfCheck", true);
+            const sortedAlarms2 = nowAlarms.filter(alarm => changeTimetoNumber(alarm).timeNumber > getCurrentDate().currentTimeNumber)
+              .sort((a,b)=> changeTimetoNumber(a).timeNumber - changeTimetoNumber(b).timeNumber);
+            if(sortedAlarms2.length > 0) {
+              store.setProp("fetchedNextAlarm", sortedAlarms2[0]); // 중복 감점 방지 최신화
+            } else if (sortedAlarms2.length === 0) {
+              store.setProp("fetchedNextAlarm", ""); // 중복 감점 방지 최신화
+            }
+            console.log("preSelfCheck 결과: ", store.selfCheckScore7Weeks, store.selfCheckScoreWeek, store.lastRecordWeek, store.screenTime7Weeks);
+            await save("myStatus", store);
+          }
+        }
+      }
     },
   }))
 

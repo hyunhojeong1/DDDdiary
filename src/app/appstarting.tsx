@@ -1,7 +1,7 @@
-import { Button, Screen, Text, TextField } from "@/components";
-import { ThemedStyle } from "@/theme";
+import { Button, Screen, Switch, Text, TextField } from "@/components";
+import { spacing, ThemedStyle } from "@/theme";
 import { useAppTheme } from "@/utils/useAppTheme";
-import { Alert, Linking, Modal, TextStyle, View, ViewStyle, Platform, PermissionsAndroid, ScrollView, ActivityIndicator, Image } from "react-native";
+import { Alert, Linking, Modal, TextStyle, View, ViewStyle, Platform, PermissionsAndroid, ScrollView, ActivityIndicator, Image, Dimensions } from "react-native";
 import { useEffect, useState } from "react";
 import { useStores } from "@/models";
 import { useTranslation } from "react-i18next";
@@ -11,31 +11,63 @@ import * as Notifications from 'expo-notifications';
 import { getMessaging } from "@react-native-firebase/messaging";
 import * as Haptics from 'expo-haptics';
 import { checkInternetConnection } from "@/utils/network";
+import { AdsConsent, AdsConsentDebugGeography } from 'react-native-google-mobile-ads';
+import { useSafeAreaInsetsStyle } from "@/utils/useSafeAreaInsetsStyle";
+import { changeTimetoNumber } from "@/utils/changeTimes";
+
 
 
 const messaging = getMessaging();
 const ddddiaryChar = require("../../assets/images/ddddiaryChar_cut1.png");
+const ddddiaryCharDark = require("../../assets/images/ddddiaryChar_cut1_dark.png");
+const ddddiaryChar2 = require("../../assets/images/ddddiaryChar_cut2.png");
+const ddddiaryChar2Dark = require("../../assets/images/ddddiaryChar_cut2_dark.png");
+
 
 export default function appStarting() {
+  const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
   const { theme, themed } = useAppTheme();
   const { myStatusStore } = useStores();
   const { i18n, t } = useTranslation();
   const initialLang = i18n.language.split("-")[0];
   const route = useRouter();
+  const screenWidth = Dimensions.get("window").width;
+
   const [page, setPage] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalValue, setModalValue] = useState('en');
   const [warning, setWarning] = useState("");
   const [isSaved, setIsSaved] = useState(true);
+  const [isEEA, setIsEEA] = useState(false);
+
+  //Daily Alarm Modal
+  const [timeDal, setTimeDal] = useState(false);
+  const [hour, setHour] = useState('12');
+  const [minute, setMinute] = useState('00');
+  const [ampm, setAmPm] = useState('PM');
+  const [alarmSwitch, setAlarmSwitch] = useState(false);
+  const [isToggled, setIsToggled] = useState(true);
 
 
   useEffect(()=>{
     myStatusStore.setProp("userCLang", initialLang);
+    checkIFEEA();
   },[]);
+
+  const checkIFEEA = async () => {
+    AdsConsent.reset();
+    const info = await AdsConsent.requestInfoUpdate({debugGeography: AdsConsentDebugGeography.EEA}); // 바꾸거라.. 리셋도 없애거라...
+    const isInEEA = info.status;
+    console.log(isInEEA);
+    if(isInEEA === "REQUIRED" || isInEEA === "UNKNOWN") {
+      setIsEEA(true);
+    }
+  };
 
   const handleNextPage = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     setPage(false);
+    fetchAlarm();
 
     if(Platform.OS === 'android' && Platform.Version >=33) {
       const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
@@ -79,6 +111,17 @@ export default function appStarting() {
     }
   };
 
+
+  const fetchAlarm = () => {
+    const {hour12Number, minuteNumber, ampm} = changeTimetoNumber(myStatusStore.userDAlarm);
+    if(hour12Number && minuteNumber && ampm) {
+      setHour(hour12Number.toString());
+      setMinute(minuteNumber.toString().padStart(2,'0'));
+      setAmPm(ampm);
+    }
+    setAlarmSwitch(myStatusStore.userDAlarmOn);
+  };
+
   const handleGetFCMToken = async () => {
     if(myStatusStore.fcmToken === ""){
       const token = await messaging.getToken();
@@ -91,6 +134,40 @@ export default function appStarting() {
     setModalVisible(false);
     myStatusStore.setProp("userCLang", value);
     i18n.changeLanguage(value);
+  };
+
+
+  const handleSetAlarm = async () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const hasInternet = await checkInternetConnection();
+    if(!hasInternet){
+      Alert.alert(t('appStartScreen:warnNoInternet1'), t('appStartScreen:warnNoInternet2'));
+      return;
+    }
+    const alarmTime = `${hour}:${minute} ${ampm}`
+    myStatusStore.setProp("userDAlarm", alarmTime); //새 값 받고 toggle함수로 넘기기
+    handleAlarmToggle(true);
+    setTimeDal(false);
+  };
+
+  const handleAlarmToggle = async (value : boolean) => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    const hasInternet = await checkInternetConnection();
+    if(!hasInternet){
+      Alert.alert(t('appStartScreen:warnNoInternet1'), t('appStartScreen:warnNoInternet2'));
+      return;
+    }
+    setIsToggled(false);
+    myStatusStore.setProp("somethingChanged", true);
+    const booly = await myStatusStore.toggleUserDAlarm(value);
+    if(booly) {
+      setIsToggled(true);
+      setAlarmSwitch(value); // save mystatus 안해도, nickname은 MST에 자동 저장된 상태임을 유의
+    } else {
+      setIsToggled(true);
+      handleGetFCMToken();
+      Alert.alert(t('settingScreen:invalidFFRequest1'), t('settingScreen:invalidFFRequest2'));
+    }
   };
 
   const handleJoin = async ()=> {
@@ -125,56 +202,125 @@ export default function appStarting() {
     >
       {page ? 
           <View style={{flex : 1}}>
-            <ScrollView contentContainerStyle={themed($topContainer)}>
-              <Text
-                text="DDDdiary"
-                style={themed($welcomeTitle)}
-              />
-              <Text
-                tx="appStartScreen:helloBeginner"
-                style={themed($welcomeHeader)}
-              />
-              <Image
-                source={ddddiaryChar}
-                style={{maxWidth: '100%'}}
-              />
-              <Text
-                tx="appStartScreen:needYourInfo"
-                style={themed($welcomeHeader)}
-              />
-              {initialLang !== "en" ? 
-                <Text text={"Hello!\nWe only need 2 pieces of information from you."} /> : null }
-              <Text
-                tx="appStartScreen:dontWorry"
-                preset="default"
-              />
-              <Text
-                tx="appStartScreen:yourAlarmAllow"
-                preset="subheading"
-                style={themed($listHeader)}
-              />
-              {initialLang !== "en" ? 
-                <Text text="Allow notifications" /> : null }
-              <Text
-                tx="appStartScreen:explainAlarmAllow"
-                preset="default"
-              />
-              <Text
-                tx="appStartScreen:yourNickname"
-                preset="subheading"
-                style={themed($listHeader)}
-              />
-              {initialLang !== "en" ? 
-                <Text text={"Your nickname\n"} /> : null }
+            <ScrollView>
+              <View style={themed($topContainer)}>
+                <Text
+                  text="DDDdiary"
+                  style={themed($welcomeTitle)}
+                />
+                <Text
+                  tx="appStartScreen:helloBeginner"
+                  style={themed($welcomeHeader)}
+                />
+                {initialLang !== "en" ? 
+                  <Text text={"Hello!"} /> : null }
+                {!theme.isDark ? 
+                  <View style={{maxHeight: screenWidth*0.75}}>
+                    <Image
+                      source={ddddiaryChar}
+                      style={{width : '100%', height : '100%'}}
+                    />
+                  </View>
+                : <View style={{maxHeight: screenWidth*0.75}}>
+                    <Image
+                      source={ddddiaryCharDark}
+                      style={{width: '100%', height: '100%'}}
+                    />
+                  </View>
+                }
+                <Text
+                  tx="appStartScreen:needYourInfo"
+                  preset="formLabel"
+                  style={{marginTop : spacing.sm}}
+                />
+                {initialLang !== "en" ? 
+                  <Text 
+                    text={"(We only need 2 pieces of information from you.)"} // 바꿔바꿔
+                    style={themed($smallText)}
+                  /> 
+                : null }
+                <Text
+                  tx="appStartScreen:yourAlarmAllow"
+                  preset="subheading"
+                  style={themed($listHeader)}
+                />
+                {initialLang !== "en" ? 
+                  <Text 
+                    text="Allow notifications"
+                    style={themed($smallText)}
+                  /> : null 
+                }
+                <Text
+                  tx="appStartScreen:explainAlarmAllow"
+                  preset="default"
+                />
+
+                <Text
+                  tx="appStartScreen:yourNickname"
+                  preset="subheading"
+                  style={themed($listHeader)}
+                />
+                {initialLang !== "en" ? 
+                  <Text 
+                    text={"Your nickname\n"} 
+                    style={themed($smallText)}
+                  /> : null 
+                }
+                { isEEA ?
+                  <View>
+                    <Text
+                      tx="appStartScreen:yourGoogleAds"
+                      preset="subheading"
+                      style={themed($listHeader)}
+                    />
+                    <Text 
+                      text="Choice for Personalized Ads" // 바꿔바꿔
+                      style={themed($smallText)}
+                    />
+                    <Text
+                      tx="appStartScreen:explainGoogleAds"
+                      preset="default"
+                    />
+                  </View>
+                : null 
+                }
+                <Button 
+                  tx="appStartScreen:okBtn" 
+                  onPress={handleNextPage} 
+                  style={themed($gotItBtn)}
+                  textStyle={{color : '#FFF'}}
+                />
+                </View>
+
+                {!theme.isDark ? 
+                  <View style={{height : screenWidth*0.62 + spacing.md*2, marginTop : spacing.lg}}>
+                  <Text
+                    tx="appStartScreen:dontWorry"
+                    style={{width : '90%', marginLeft : spacing.sm, fontSize : spacing.sm, lineHeight : spacing.md}}
+                  />
+                    <Image
+                      source={ddddiaryChar2}
+                      style={{width : screenWidth, height : screenWidth*0.62, position : 'absolute', top: spacing.md*2}}
+                    />
+                  </View>
+                : <View style={{height : screenWidth*0.62 + spacing.md*2, marginTop : spacing.lg}}>
+                  <Text
+                    tx="appStartScreen:dontWorry"
+                    style={{width : '90%', marginLeft : spacing.sm, fontSize : spacing.sm, lineHeight : spacing.md}}
+                  />
+                    <Image
+                      source={ddddiaryChar2Dark}
+                      style={{width : screenWidth, height : screenWidth*0.62, position : 'absolute', top: spacing.md*2}}
+                    />
+                  </View>
+                }
             </ScrollView>
-            <View style={themed($bottomContainer)}>
-              <Button tx="appStartScreen:okBtn" onPress={handleNextPage} />
-            </View>
           </View>
 
       :
 
         <View style={themed($nextPageContainer)}>
+          <ScrollView>
             <Text
               tx="appStartScreen:yourLanguage"
               preset="subheading"
@@ -210,13 +356,46 @@ export default function appStarting() {
               preset="formLabel"
               style={themed($warningText)}
             />
+            <Text
+              text={t(`appStartScreen:setDailyAlarm`)}
+              preset="subheading"
+              style={themed($listHeader)}
+            />
+            <Text
+              text={t(`appStartScreen:explainDailyAlarm`)}
+              style={themed($smallText)}
+            />
+            <Text
+              style={themed($detailTextLarge)}
+              text={`${t('settingScreen:alarmTime')}${myStatusStore.userDAlarm}`}
+            />
+            { isToggled ?
+              <Switch
+                containerStyle={themed($verticalMargin)}
+                inputInnerStyle={themed($switchBtn)}
+                labelTx={myStatusStore.userDAlarmOn ? "settingScreen:activation" : "settingScreen:inactivation"}
+                labelPosition="right"
+                value={alarmSwitch}
+                onValueChange={(value)=>{handleAlarmToggle(value);}}
+              />
+            :
+              <View style={themed($actIndicator)} >
+                <ActivityIndicator size={'small'} />
+              </View>
+            }
+            <Button 
+              style={themed($detailBtn)}
+              text={t(`settingScreen:button1`)}
+              onPress={()=>{setTimeDal(true); Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);}}
+            />
             <Button 
               text={isSaved ? t("appStartScreen:letsJoin") : ""}
-              LeftAccessory={()=> !isSaved ? <View><ActivityIndicator size={"small"} /></View> : null}
+              LeftAccessory={()=> !isSaved ? <View><ActivityIndicator color={'white'} size={"small"} /></View> : null}
               onPress={handleJoin}
-              style={themed($letsStartBtn)}
+              style={themed($gotItBtn)}
+              textStyle={{color : '#FFF'}}
             />
-
+          </ScrollView>
 
           <Modal
             visible={modalVisible}
@@ -248,6 +427,64 @@ export default function appStarting() {
               </View>
             </View>
           </Modal>
+
+
+          <Modal
+            visible={timeDal} 
+            transparent={true} 
+            animationType="slide"
+          >
+            <View style={themed($GeneralModal)}>
+              <View style={themed($GeneralModalHeader)}>
+                <Button 
+                  tx="common:cancel" 
+                  onPress={()=>{Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); setTimeDal(false); }} 
+                  style={themed($GeneralModalBtn2Alarm)} 
+                  textStyle={themed($GeneralModalBtnTx)}
+                />
+                <Button 
+                  tx="common:ok" 
+                  onPress={handleSetAlarm} 
+                  style={themed($GeneralModalBtn2Alarm)} 
+                  textStyle={themed($GeneralModalBtnTx)}
+                />
+              </View>
+              <View style={[themed($GeneralPickerContainer), $bottomContainerInsets]}>
+                <Picker 
+                  selectedValue={hour} 
+                  onValueChange={setHour} 
+                  style={themed($timePicker)}
+                  itemStyle = {themed($pickerText)}
+                  dropdownIconColor={theme.colors.palette.neutral900}
+                >
+                  {[...Array(12).keys()].map(
+                    i => (<Picker.Item key={i + 1} label={`${i + 1}`} value={`${i + 1}`} />)
+                  )}
+                </Picker>
+                <Picker 
+                  selectedValue={minute} 
+                  onValueChange={setMinute} 
+                  style={themed($timePicker)}
+                  itemStyle = {themed($pickerText)}
+                  dropdownIconColor={theme.colors.palette.neutral900}
+                >
+                  {[...Array(4).keys()].map(
+                    i => (<Picker.Item key={i*15} label={`:  ${(i*15).toString().padStart(2, '0')}`} value={(i*15).toString().padStart(2, '0')} />)
+                  )}
+                </Picker>
+                <Picker 
+                  selectedValue={ampm} 
+                  onValueChange={setAmPm} 
+                  style={themed($timePicker)}
+                  itemStyle = {themed($pickerText)}
+                  dropdownIconColor={theme.colors.palette.neutral900}
+                >
+                  <Picker.Item label={t('common:amText')} value="AM" />
+                  <Picker.Item label={t('common:pmText')} value="PM" />
+                </Picker>
+              </View>
+            </View>
+          </Modal>
         </View>
       }
     </Screen>
@@ -258,24 +495,13 @@ export default function appStarting() {
 const $container: ThemedStyle<ViewStyle> = ({ colors }) => ({
   flex: 1,
   backgroundColor: colors.tabBackground,
-  borderTopWidth : 1,
+  // borderTopWidth : 1,
   borderColor : colors.separator,
 })
 
 const $topContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
-  paddingHorizontal: spacing.lg,
+  marginHorizontal : spacing.sm,
   paddingVertical : spacing.lg,
-})
-
-const $bottomContainer: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
-  flexBasis: "30%",
-  backgroundColor: colors.palette.neutral150,
-  borderTopLeftRadius: spacing.lg,
-  borderTopRightRadius: spacing.lg,
-  borderWidth : 1,
-  borderColor : colors.separator,
-  paddingHorizontal: spacing.lg,
-  justifyContent: "space-around",
 })
 
 const $welcomeTitle: ThemedStyle<TextStyle> = ({ spacing }) => ({
@@ -290,13 +516,25 @@ const $welcomeHeader: ThemedStyle<TextStyle> = ({ spacing }) => ({
   lineHeight : spacing.xxl,
 })
 
+const $smallText: ThemedStyle<TextStyle> = ({ spacing }) => ({
+  fontSize : spacing.sm,
+  lineHeight : spacing.md,
+})
+
 const $listHeader: ThemedStyle<TextStyle> = ({ spacing }) => ({
   marginTop : spacing.xxl,
 })
 
+const $gotItBtn: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  backgroundColor : colors.palette.delight100,
+  marginVertical : spacing.xxl,
+  borderRadius : spacing.lg,
+  borderWidth : 0,
+})
+
 const $nextPageContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   flex : 1,
-  paddingHorizontal: spacing.lg,
+  paddingHorizontal: spacing.sm,
   paddingVertical : spacing.md,
 })
 
@@ -343,8 +581,27 @@ const $GeneralModalBtn: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginBottom : spacing.xxxl,
 })
 
+const $GeneralModalBtn2Alarm: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  backgroundColor : 'transparent',
+  borderWidth : 0,
+  padding : spacing.sm,
+  margin : spacing.sm,
+})
+
 const $GeneralModalBtnTx: ThemedStyle<TextStyle> = ({ colors}) => ({
   color: colors.palette.delight100,
+})
+
+const $GeneralPickerContainer: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  flexDirection : 'row',
+  justifyContent : 'center',
+  backgroundColor : colors.palette.neutral200,
+})
+
+const $timePicker: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+  minWidth : '30%',
+  marginBottom : spacing.xxxl,
+  color : colors.palette.neutral900,
 })
 
 const $langPicker: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
@@ -366,11 +623,33 @@ const $warningText: ThemedStyle<TextStyle> = ({ colors }) => ({
   color : colors.palette.angry500,
 })
 
-const $letsStartBtn: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
-  marginHorizontal : spacing.lg,
-  marginTop : spacing.xxxl,
+const $detailTextLarge: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+  color : colors.palette.delight100,
+  fontSize : spacing.md,
+  paddingTop : spacing.lg,
+  fontWeight : 'bold',
+})
+
+const $verticalMargin: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  marginVertical : spacing.sm,
+})
+
+const $switchBtn: ThemedStyle<ViewStyle> = ({ colors }) => ({
+  backgroundColor : colors.palette.delight100,
+})
+
+const $actIndicator: ThemedStyle<ViewStyle> = ({spacing}) => ({
+  marginVertical : spacing.lg,
+  marginHorizontal : spacing.md,
+  alignItems : 'flex-start',
+  justifyContent : 'flex-start',
+})
+
+const $detailBtn: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+  marginHorizontal : spacing.xl,
   backgroundColor : colors.palette.neutral100,
-  borderRadius : spacing.lg,
+  borderRadius : spacing.xs,
   borderWidth : 1,
 })
+
 

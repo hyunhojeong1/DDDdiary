@@ -11,6 +11,7 @@ export const MyFriendModel = types
     myMemo : "",
     friendTodayProcess : types.optional(types.boolean, false),
     friendAlarms : "",
+    friendTodayQAnswer : "",
     friendFavorite : types.optional(types.boolean, false),
   })
   .actions(withSetPropAction)

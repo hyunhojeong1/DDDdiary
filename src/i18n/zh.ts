@@ -21,6 +21,13 @@ const zh: Translations = {
     doIt: "执行吧！",
     errorHappened: "发生错误",
     tryAgain: "请再试一次。",
+    Sun: "일", //바꿔라바꿔라
+    Mon: "월",
+    Tue: "화",
+    Wed: "수",
+    Thu: "목",
+    Fri: "금",
+    Sat: "토", //바꿔라바꿔라
   },
   tabs: {
     notifeeNextAlarm: "下一次手机重用时间是:",
@@ -48,10 +55,14 @@ const zh: Translations = {
     yourNickname: "2. 昵称（别名、爱称）",
     yourAlarmAllow: "1. 允许通知",
     explainAlarmAllow: "请允许设备通知，以接收日记提醒。如果不同意，某些功能将被限制。",
+    yourGoogleAds : "3. 광고 개인 맞춤화 선택", // 바꿔바꿔
+    explainGoogleAds : "DDDdiary는 앱 유지비용을 광고로 충당합니다.\n개인 맞춤형 광고 동의 시, 광고 제공업체(구글 Admob사)가 사용자의 이력을 추적하여 개인에 최적화된 광고를 제공합니다.\n거부 시 추적되지 않으며, 일반 무작위 광고가 제공됩니다.", // 바꿔바꿔
     okBtn: "明白了\n(Got it.)",
     yourLanguage: "当前语言设置：",
     needYourNickname: "设定你的昵称：",
     askNickname: "请输入你的昵称（别名、爱称）。",
+    setDailyAlarm : "일일 알람 설정", // 바꿔바꿔
+    explainDailyAlarm : "매일 일기 작성을 상기시켜주는 알람을 설정해보세요.(선택사항)", // 바꿔바꿔
     letsJoin: "我们出发吧！",
     welcomeJoin1: "欢迎开始戒除手机成瘾的挑战！",
     welcomeJoin2: "请开始写下你今天的日记。",
@@ -62,7 +73,7 @@ const zh: Translations = {
   todayWScreen: {
     todayStart: "开始",
     needWarningCheck: "需要确认注意事项",
-    explainWarningCheck: "请阅读并确认第6项的注意事项。",
+    explainWarningCheck: "请阅读并确认第4项的注意事项。",
     needWait12: "哇哦，您真的很有热情，但……",
     explainWait12: "由于日期变更，日记将在10秒内暂时无法保存。请稍等片刻！",
     writing: " 正在书写中...",
@@ -80,6 +91,7 @@ const zh: Translations = {
     explainAlarm: "[提示]\n1. 请设定目标时间，以便重新使用手机。\n2. 最多可设定7个闹钟。\n3. 在静音模式下将不会发出声音（仅震动）。",
     addAlarmBtn: "添加闹钟",
     reuseAlarmBtn: "重用之前的闹钟",
+    explainPreAlarmUse : "과거 일기에 사용했던 알람들 중 하나를 선택하세요.", // 바꿔바꿔
     reUseComment: "[提示]\n无法重用闹钟：过去两周内没有使用的闹钟记录。",
     warnMaxAlarm: "闹钟设置失败",
     explainMaxAlarm: "最多只能设置7个闹钟。",
@@ -89,10 +101,11 @@ const zh: Translations = {
     placeholderQ3: "例如：分享昨天的照片，打电话给爸爸，挂单股票",
     qCaution: "6. 开始前注意事项说明:",
     Caution:
-      "1. 请注意，在进行日记（戒除手机）期间不要错过电话或重要联系。\n\n2. 由于不使用智能手机而产生的任何损失（错过重要消息、信息等），本应用及开发者不承担责任。\n\n3. 本应用并非专业或医学用途的治疗工具，不能保证治疗效果。\n\n4. 为了接收重新使用提醒，请保持网络连接，并允许设备通知。\n\n5. 闹钟可能不够精准。\n- 由于网络状态、操作系统策略等，闹钟可能无法接收。\n- 为确保准确接收，请使用设备内置的标准闹钟应用。",
+      "1. 在进行日记（戒瘾）时，请注意不要错过来电或重要联系。\n\n2. 对于因不使用智能手机而可能造成的损失，应用及其开发者概不负责。\n\n3. 若要接收重新使用提醒，请允许应用发送通知。",
     cautionOk: " 我已阅读并确认上述注意事项。",
     allowAlarm: "设置设备通知权限",
-    todayQ: "5. 今日提问:",
+    noOver500 : '오늘의 물음을 500자 초과하여 작성할 수 없습니다.',
+    nowTextLength : "현재 글자 수: ",
   },
   todayRScreen: {
     todayModify: "修改",
@@ -109,16 +122,15 @@ const zh: Translations = {
     timeZone: "设定闹钟时间所基于的地区（时区）：",
     explainZoneChange: "[注意] 您正在移动中吗？\n当前所在地区的时区与设定的时区不同。\n（可能存在时差）\n若想以当前位置的时区重新设定闹钟，请修改日记并重新开始。",
     explainQ3R: "[提示]\n若您在设定的手机解禁时间前想起要用手机做的事，请提前记录下来，在解禁时间集中处理！",
+    noMoreAlarm : "오늘 완료! 설정된 다음 알람이 없습니다.", // 바꿔바꿔
+    noMoreActions : "작성한 내용이 없습니다.\n(잠금화면에서 답장하신 내용이 없어요!)", //바꿔바꿔
   },
   pastScreen: {
     bigTitle: "的\n智能手机戒断日志",
-    explainScreenTime : "请检查当前的手机使用时间: ",
-    screenTimeLink : "前往",
-    explainLinkFailAnd1 : "打开使用时间应用失败。",
-    explainLinkFailAnd2 : "请在设备的“数字健康”应用中查看。",
-    explainLinkFailIos1 : "打开使用时间应用失败。",
-    explainLinkFailIos2 : "请在设备的“屏幕使用时间”设置中查看。",
-    explain2Weeks: "[提示]\n1. 已撰写超过两周的日记将自动删除。\n2. 删除应用时，保存的日记与好友信息也会被一并删除。\n3. 忘记写日记了吗？请在“设置”选项卡中设置“每日提醒”!",
+    pastScreenTime : "하루 평균 스마트폰 사용시간(과거 7주)", // 바꿔바꿔
+    weeks: "주차(Weeks)",
+    pastDDScore: "디지털 디톡스 점수(과거 7주)", // 바꿔바꿔
+    explain2Weeks: "已撰写超过两周的日记将自动删除。",
     toTheList: "返回列表",
     deleteDiary: "删除日记",
     explainDelete: "被删除的日记无法恢复。"
@@ -236,6 +248,10 @@ const zh: Translations = {
     processNo: " 未进行",
     noAlarms: "闹钟时间: ?",
     yesAlarms: "闹钟时间: ",
+    todayQAnswer : "오늘의 물음 답변:", //바꿔바꿔
+    favoriteYesBtn : "즐겨찾기됨", // 바꿔바꿔
+    favoriteNoBtn : "즐겨찾기",
+    BanBtn : "삭제", //바꿔바꿔
     explainFriendLimit: "[提示] 最多可以添加20位好友。\n当前好友数量：",
     explainModify: "\n请注意拼写错误：如果昵称/代码输入错误，虽然可以添加好友，但状态将不会共享！",
     myRandomId: "我的账户密钥代码",
@@ -285,6 +301,32 @@ const zh: Translations = {
     invalidFFRequest1 : "发生错误。",
     invalidFFRequest2 : "如果此问题持续存在，请重新启动应用程序或更改（重置）你的昵称。",
   },
+  selfCheckModal: { // 바꿔바꿔
+    todayStart: "일기 시작",
+    needCorrectTime: "올바른 양식(시간, 분)을 입력 해주세요.",
+    selfCheckTitle: "자가평가",
+    askScreenTime: "지난 주 스마트폰 사용 시간을 입력해주세요.",
+    explainIosScreen1: "시간 확인 방법:\n1. 기기 '설정' 앱",
+    explainIosScreen2: "에서 '스크린타임' 메뉴",
+    explainIosScreen3: "로 이동해주세요.",
+    explainIosScreen4: "2. 지난 주 하루 평균 스크린타임 시간을 아래에 입력해주세요.",
+    explainAndScreen1: "시간 확인 방법:\n1. 기기 '설정' 앱",
+    explainAndScreen2: "에서 '디지털 웰빙' 메뉴",
+    explainAndScreen3: "로 이동해주세요.",
+    explainAndScreen4: "2. 지난 주 하루 평균 웰빙웰빙웰빙 시간을 아래에 입력해주세요.", // 이게 대체 뭐라고 부르냐..
+    goToSetting : "설정으로 이동하기", // 바꿔바꿔
+    time: "시간",
+    minute: "분",
+    save: "저장",
+    from: " 부터", // 쓰기
+    to: " 까지", //띄어
+    askHowManyTimes: "스마트폰을 총 몇 번 사용하셨나요?\n(화면잠금 해제 기준)",
+    timesMore4: "4회 이상",
+    times2or3: "2~3회",
+    times1: "1회",
+    times0: "0회",
+    skip: "평가 미응답(skip)",
+  }, // 모든걸 다바꿔
   errorScreen: {
     title: "哎呀..! 出现了一些错误ㅠ.ㅠ",
     friendlySubtitle:
@@ -305,7 +347,7 @@ const zh: Translations = {
     },
     friends: {
       heading: "尚未添加任何好友。",
-      content: "添加新朋友，一起共享状态吧！\n共享信息：今日是否进行摆脱成瘾挑战、闹钟时间 \n（日记内容不会被共享。）",
+      content: "添加新朋友，互相分享状态！",
     },
   },
 

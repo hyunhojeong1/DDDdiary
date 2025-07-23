@@ -318,21 +318,59 @@ ignite-cli (used for initial project generation): 10.3.0 : {
     "publisher": "Krzysztof Borowy",
     "email": "contact@kborowy.com",
 },
+"victory-native@41.17.4": {
+    "licenses": "MIT",
+    "repository": "https://github.com/FormidableLabs/victory-native-xl",
+},
+"@shopify/flash-list@1.7.3": {
+    "licenses": "MIT",
+    "repository": "https://github.com/Shopify/flash-list",
+    "publisher": "shopify",
+},
+"@shopify/react-native-skia@1.12.4": {
+    "licenses": "MIT",
+    "repository": "https://github.com/Shopify/react-native-skia",
+    "publisher": "Shopify Inc.",
+},
+"react-native-paper@5.14.5": {
+    "licenses": "MIT",
+    "repository": "https://github.com/callstack/react-native-paper",
+},
+"Google Fonts/Roboto_Regular" : {
+    "licenses": "SIL OPEN FONT LICENSE Version 1.1",
+    "website": "https://fonts.google.com/specimen/Roboto/license",
+    "publisher": "Google Fonts(Designed by Christian Robertson, Paratype, Font Bureau)",
+},
+"Google Fonts/Material Design Icon" : {
+    "licenses": "Apache License Version 2.0",
+    "repository": "https://github.com/google/material-design-icons",
+    "publisher": "Google Fonts",
+},
 Image Title: "Empty Desert Illustration" : {
     source: Generated using ChatGPT by OpenAI
     license: Permissive use under OpenAI content policy
     policy : https://openai.com/policies/usage-policies
-}
+},
 Image Title: "DDDdiary App Icon Illustration" : {
     source: Generated using ChatGPT by OpenAI
     license: Permissive use under OpenAI content policy
     policy : https://openai.com/policies/usage-policies
-}
+},
 Image Title: "DDDdiary Notification Icon Illustration" : {
     source: Generated using ChatGPT by OpenAI
     license: Permissive use under OpenAI content policy
     policy : https://openai.com/policies/usage-policies
-}
+},
+Image Title: "DDDdiary Character_cut2(owl)" : {
+    source: Generated using ChatGPT by OpenAI
+    license: Permissive use under OpenAI content policy
+    policy : https://openai.com/policies/usage-policies
+},
+Image Title: "How to use DDDdiary Instruction Illustration1,2,3" : {
+    source: Generated using ChatGPT by OpenAI
+    license: Permissive use under OpenAI content policy
+    policy : https://openai.com/policies/usage-policies
+},
 
 ################################################################################################
 Section2. Full License Text For Direct & Transitive (Indirect) Dependencies 

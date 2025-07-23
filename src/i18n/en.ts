@@ -19,7 +19,14 @@ const en = {
     okISee: "Got it",
     doIt: "Let's do it!",
     errorHappened: "An error occurred",
-    tryAgain: "Please try again."
+    tryAgain: "Please try again.",
+    Sun: "일", //바꿔라바꿔라
+    Mon: "월",
+    Tue: "화",
+    Wed: "수",
+    Thu: "목",
+    Fri: "금",
+    Sat: "토", //바꿔라바꿔라
   },
   tabs: {
     notifeeNextAlarm: "Next smartphone reuse time: ",
@@ -46,10 +53,14 @@ const en = {
     yourNickname: "2. Nickname (alias, pet name)",
     yourAlarmAllow: "1. Allow Notifications",
     explainAlarmAllow: "To receive diary alerts, please allow app notifications in your device settings. If declined, some features may be limited.",
+    yourGoogleAds : "3. 광고 개인 맞춤화 선택", // 바꿔바꿔
+    explainGoogleAds : "DDDdiary는 앱 유지비용을 광고로 충당합니다.\n개인 맞춤형 광고 동의 시, 광고 제공업체(구글 Admob사)가 사용자의 이력을 추적하여 개인에 최적화된 광고를 제공합니다.\n거부 시 추적되지 않으며, 일반 무작위 광고가 제공됩니다.", // 바꿔바꿔
     okBtn: "Got it.",
     yourLanguage: "Current language setting:",
     needYourNickname: "Choose a nickname:",
     askNickname: "Enter your nickname (alias, pet name).",
+    setDailyAlarm : "일일 알람 설정", // 바꿔바꿔
+    explainDailyAlarm : "매일 일기 작성을 상기시켜주는 알람을 설정해보세요.(선택사항)", // 바꿔바꿔
     letsJoin: "Let’s do this!",
     welcomeJoin1: "Welcome to the challenge of escaping addiction!",
     welcomeJoin2: "Try writing today’s diary entry.",
@@ -60,7 +71,7 @@ const en = {
   todayWScreen: {
     todayStart: "Start",
     needWarningCheck: "Warning check needed",
-    explainWarningCheck: "Please read the warnings in Section 6 and click confirm.",
+    explainWarningCheck: "Please read the warnings in Section 4 and click confirm.",
     needWait12: "Wow, you’ve got energy! But...",
     explainWait12: "Due to the date change, diary saving is blocked for 10 seconds. Please wait!",
     writing: " Writing...",
@@ -78,18 +89,23 @@ const en = {
     explainAlarm: "[Info]\n1. Set an alarm for your target reuse time.\n2. You can set up to 7 alarms.\n3. Alarms won’t make sound in silent mode.",
     addAlarmBtn: "Add Alarm",
     reuseAlarmBtn: "Reuse Previous Alarm",
+    explainPreAlarmUse : "과거 일기에 사용했던 알람들 중 하나를 선택하세요.", // 바꿔바꿔
     reUseComment: "[Info]\nCannot reuse alarm: No past alarms used in the last 2 weeks.",
     warnMaxAlarm: "Failed to set alarm",
     explainMaxAlarm: "You can set up to 7 alarms.",
     shareCheck: "Share alarm time with friends",
     q3: "4. Tasks to do during phone-free time:",
     explainQ3: "[Info]\nIf you think of something to do with your phone before the reuse alarm time, write it down below.\ne.g., “Oh right! I’m curious if stocks went up today!”\nHandle all the noted tasks at once during the reuse time!",
+    instruction1 : "우리가 <bold>알림 메시지를</bold> 보낼거야.",
+    instruction2 : "①②③앱을 닫거나 화면이 꺼지면 앱에서 '나의 할 일' 목록을<bold>알림 메시지</bold>로 보내드릴게요.",
+    instruction3 : "①②③앱을 닫거나 화면이 꺼지면 앱에서 '나의 할 일' 목록을<bold>알림 메시지</bold>로 보내드릴게요.",
     placeholderQ3: "e.g., Share photos from yesterday, call dad, place stock order",
     qCaution: "6. Pre-start Warnings:",
-    Caution: "1. Be careful not to miss important calls or messages during the diary session (addiction escape).\n\n2. The app and developer are not responsible for any loss caused by not using the smartphone (e.g., missing important news or info).\n\n3. This app is not a professional or medical treatment for smartphone addiction, and its effects are not guaranteed.\n\n4. To receive smartphone reuse alarms, maintain internet connection and allow app notifications.\n\n5. Reuse alarms may be inaccurate.\n- Alarm reception may fail due to network status, OS policy, etc.\n- For precise alarms, use the default alarm app built into your device.",
+    Caution: "1. Al usar el diario (Escape de la adicción), ten cuidado de no perder llamadas o mensajes importantes.\n\n2. La app y sus creadores no se hacen responsables de ninguna pérdida que pueda derivarse de no usar el smartphone.\n\n3. Para recibir alarmas de reutilización, por favor habilita las notificaciones de la app.",
     cautionOk: " I have read and understood the warnings above.",
     allowAlarm: "Go to notification settings",
-    todayQ: "5. Today’s Question:"
+    noOver500 : '오늘의 물음을 500자 초과하여 작성할 수 없습니다.',
+    nowTextLength : "현재 글자 수: ",
   },
   todayRScreen: {
     todayModify: "Edit",
@@ -105,17 +121,16 @@ const en = {
     explainAlarmR: "[Info]\n-. The alarm will sound 7 times at 5 second intervals.\n-. In silent mode, only vibration will occur (no sound).",
     timeZone: "Timezone for alarm: ",
     explainZoneChange: "[Caution] Are you on the move?\nYour current timezone differs from the alarm’s base timezone.\n(Time difference may apply.)\nIf you wish to change the alarm to your current timezone, please edit and restart the diary entry.",
-    explainQ3R: "[Info]\nIf you remember something to do before the reuse alarm, write it down here and take care of it all at once during reuse time!"
+    explainQ3R: "[Info]\nIf you remember something to do before the reuse alarm, write it down here and take care of it all at once during reuse time!",
+    noMoreAlarm : "오늘 완료! 설정된 다음 알람이 없습니다.", // 바꿔바꿔
+    noMoreActions : "작성한 내용이 없습니다.\n(잠금화면에서 답장하신 내용이 없어요!)", //바꿔바꿔
   },
   pastScreen: {
     bigTitle: "'s Smartphone Addiction Recovery Log",
-    explainScreenTime : "Check your current screen time: ",
-    screenTimeLink : "Go",
-    explainLinkFailAnd1 : "Failed to open the screen time app.",
-    explainLinkFailAnd2 : "Please check in your device’s 'Digital Wellbeing' app.",
-    explainLinkFailIos1 : "Failed to open the screen time app.",
-    explainLinkFailIos2 : "Please check in your device’s 'Screen Time' settings.",
-    explain2Weeks: "[Info]\n 1. Past diary entries older than 2 weeks will be deleted automatically.\n 2. If you delete the app, all saved diary entries and friend data will be lost.\n3. Do you forget to write your diary? Try setting a ‘Daily Alarm’ in the Settings tab!",
+    pastScreenTime : "하루 평균 스마트폰 사용시간(과거 7주)", // 바꿔바꿔
+    weeks: "주차(Weeks)",
+    pastDDScore: "디지털 디톡스 점수(과거 7주)", // 바꿔바꿔
+    explain2Weeks: "Past diary entries older than 2 weeks will be deleted automatically.",
     toTheList: "Back to List",
     deleteDiary: "Delete Diary",
     explainDelete: "Deleted diary entries cannot be restored."
@@ -233,6 +248,10 @@ const en = {
     processNo: " Not In Progress",
     noAlarms: "Alarm Time: ?",
     yesAlarms: "Alarm Time: ",
+    todayQAnswer : "오늘의 물음 답변:", //바꿔바꿔
+    favoriteYesBtn : "즐겨찾기됨", // 바꿔바꿔
+    favoriteNoBtn : "즐겨찾기",
+    BanBtn : "삭제", //바꿔바꿔
     explainFriendLimit: "[Info] You can add up to 20 friends.\nCurrent friend count: ",
     explainModify: "\nBe careful with typos: If the nickname or code is incorrect, the friend will be added but status will not be shared!",
     myRandomId: "My Secret Code",
@@ -282,6 +301,32 @@ const en = {
     invalidFFRequest1 : "An error occurred.",
     invalidFFRequest2 : "If this issue persists, please restart the app or change(reset) your nickname.",
   },
+  selfCheckModal: { // 바꿔바꿔
+    todayStart: "일기 시작",
+    needCorrectTime: "올바른 양식(시간, 분)을 입력 해주세요.",
+    selfCheckTitle: "자가평가",
+    askScreenTime: "지난 주 스마트폰 사용 시간을 입력해주세요.",
+    explainIosScreen1: "시간 확인 방법:\n1. 기기 '설정' 앱",
+    explainIosScreen2: "에서 '스크린타임' 메뉴",
+    explainIosScreen3: "로 이동해주세요.",
+    explainIosScreen4: "2. 지난 주 하루 평균 스크린타임 시간을 아래에 입력해주세요.",
+    explainAndScreen1: "시간 확인 방법:\n1. 기기 '설정' 앱",
+    explainAndScreen2: "에서 '디지털 웰빙' 메뉴",
+    explainAndScreen3: "로 이동해주세요.",
+    explainAndScreen4: "2. 지난 주 하루 평균 웰빙웰빙웰빙 시간을 아래에 입력해주세요.", // 이게 대체 뭐라고 부르냐..
+    goToSetting : "설정으로 이동하기", // 바꿔바꿔
+    time: "시간",
+    minute: "분",
+    save: "저장",
+    from: " 부터", // 쓰기
+    to: " 까지", //띄어
+    askHowManyTimes: "스마트폰을 총 몇 번 사용하셨나요?\n(화면잠금 해제 기준)",
+    timesMore4: "4회 이상",
+    times2or3: "2~3회",
+    times1: "1회",
+    times0: "0회",
+    skip: "평가 미응답(skip)",
+  }, // 모든걸 다바꿔
   errorScreen: {
     title: "Oops..! Something went wrongㅠ.ㅠ",
     friendlySubtitle: "This screen appears when an error occurs. Returning to the app's home screen. We’ll fix the issue as soon as possible. Sorry for the inconvenience.",
@@ -301,7 +346,7 @@ const en = {
     },
     friends: {
       heading: "No friends added yet.",
-      content: "Add new friends and share your status with each other!\nShared info: Today's detox progress, alarm time\n(Diary content is not shared.)"
+      content: "Add a new friend and share your statuses with each other!"
     }
   },
 

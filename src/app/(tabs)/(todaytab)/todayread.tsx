@@ -1,17 +1,24 @@
 import { Button, CardView, Checkbox, Header, ListItem, Screen, Text, TextField } from "@/components";
 import { ThemedStyle } from "@/theme";
 import { useAppTheme } from "@/utils/useAppTheme";
-import { ActivityIndicator, Alert, Platform, ScrollView, TextStyle, View, ViewStyle } from "react-native";
+import { ActivityIndicator, Alert, Dimensions, Image, Platform, ScrollView, TextStyle, View, ViewStyle } from "react-native";
 import { useRef, useState } from "react";
 import { useStores } from "@/models";
 import { observer } from "mobx-react-lite";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { MotiView } from "moti";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { BannerAd, BannerAdSize, TestIds, useForeground } from "react-native-google-mobile-ads";
 import * as Haptics from 'expo-haptics'
 import { checkInternetConnection } from "@/utils/network";
+import SelfAssessmentModal from "@/app/selfCheckModal";
+import { changeTimetoNumber } from "@/utils/changeTimes";
+import { getCurrentDate } from "@/utils/getCurrentDate";
 
+
+const diaryInstruction = require("../../../../assets/images/diary_instruction1.png");
+const diaryInstruction2 = require("../../../../assets/images/diary_instruction2.png");
+const diaryInstruction3 = require("../../../../assets/images/diary_instruction3.png");
 
 // DEV 조건도 넣기, 개발 중에는 real id도 test로 바꾸기
 const adUnitId1_Test = TestIds.BANNER;
@@ -25,6 +32,7 @@ export default observer(function TodayRead() {
   const { t } = useTranslation();
   const bannerRef = useRef<BannerAd>(null);
   const bannerRef2 = useRef<BannerAd>(null);
+  const screenWidth = Dimensions.get('window').width;
   const [isRefreshed, setIsRefreshed] = useState(true);
   const [isDeleted, setIsDeleted] = useState(true);
 
@@ -81,7 +89,8 @@ export default observer(function TodayRead() {
     await new Promise(resolve => setTimeout(resolve, 300));
     setIsRefreshed(true);
   };
-  
+
+
   return (
     <Screen
       contentContainerStyle={themed($container)}
@@ -136,6 +145,47 @@ export default observer(function TodayRead() {
               text={myStatusStore.dateOfficial(myStatusStore.todayISODate, myStatusStore.todayNDate)}
             />
             <Text
+              tx="todayWScreen:q3"
+              preset="subheading"
+              style={themed($nextTimeComment)}
+            />
+            { myStatusStore.myDiaries.get(myStatusStore.todayNDate.toString())?.alarms
+                .filter(alarm => changeTimetoNumber(alarm).timeNumber > getCurrentDate().currentTimeNumber).length === 0 ?
+              <Text
+                tx="todayRScreen:noMoreAlarm"
+              />
+            : null
+            }
+            <Text
+              text={
+                myStatusStore.myDiaries.get(myStatusStore.todayNDate.toString())?.alarms
+                  .filter(alarm => changeTimetoNumber(alarm).timeNumber > getCurrentDate().currentTimeNumber)[0]
+              }
+              style={themed($nextAlarmBoldText)}
+            />
+            <Text
+              tx="todayRScreen:explainQ3R"
+              preset="subheading"
+              style={themed($currentTodoComment)}
+            />
+            { myStatusStore.myDiaries.get(myStatusStore.todayNDate.toString())?.text3 === "" ?
+              <Text
+                tx="todayRScreen:noMoreActions"
+              />
+            : null
+            }
+            <Text
+              text={myStatusStore.myDiaries.get(myStatusStore.todayNDate.toString())?.text3}
+              style={themed($todayAnswerTextQ3)}
+            />
+            <View style={themed($adContainer)}>
+              <BannerAd
+                ref={bannerRef} 
+                unitId={adUnitId1} 
+                size={BannerAdSize.LARGE_BANNER}
+              />
+            </View>
+            <Text
               tx="todayRScreen:q1"
               preset="subheading"
             />
@@ -148,13 +198,17 @@ export default observer(function TodayRead() {
               preset="subheading"
             />
             <Text
+              text={t(`dailyQuestion:${myStatusStore.myDiaries.get(myStatusStore.todayNDate.toString())?.dailyQuestion}`)}
+              style={themed($todayQuestionText)}
+            />
+            <Text
               text={myStatusStore.myDiaries.get(myStatusStore.todayNDate.toString())?.text2}
               style={themed($todayAnswerText)}
             />
             <View style={themed($adContainer)}>
               <BannerAd
-                ref={bannerRef} 
-                unitId={adUnitId1} 
+                ref={bannerRef2} 
+                unitId={adUnitId2} 
                 size={BannerAdSize.LARGE_BANNER}
               />
             </View>
@@ -162,12 +216,8 @@ export default observer(function TodayRead() {
               tx="todayRScreen:qAlarm"
               preset="subheading"
             />
-            <TextField
-              readOnly
-              scrollEnabled={false}
-              multiline={true}
-              value={theme.isDark ? t('todayRScreen:explainAlarmR') : `${t('todayRScreen:explainAlarmR')} `}
-              inputWrapperStyle={themed($inActiveTextField)}
+            <Text
+              tx="todayRScreen:explainAlarmR"
             />
             <View style={{flexDirection:'row'}}>
               <CardView style={themed($alarmBoxLeft)}>
@@ -208,45 +258,66 @@ export default observer(function TodayRead() {
               containerStyle={themed($todayShareCheckMargin)}
             />
             <Text
-              tx="todayWScreen:q3"
               preset="subheading"
+              text={t('todayWScreen:explainQ3')}
+              style={themed($instructionTitle)}
             />
-            <TextField
-              readOnly
-              scrollEnabled={false}
-              multiline={true}
-              value={theme.isDark ? t('todayRScreen:explainQ3R') : `${t('todayRScreen:explainQ3R')} `}
-              inputWrapperStyle={themed($inActiveTextField)}
-            />
-            <Text
-              text={myStatusStore.myDiaries.get(myStatusStore.todayNDate.toString())?.text3}
-              style={themed($todayAnswerTextQ3)}
-            />
-            <Text
-              tx="todayWScreen:todayQ"
-              preset="subheading"
-            />
-            <Text
-              text={t(`dailyQuestion:${myStatusStore.myDiaries.get(myStatusStore.todayNDate.toString())?.dailyQuestion}`)}
-              style={themed($todayAnswerText)}
-            />
-            <View style={themed($adContainer)}>
-              <BannerAd
-                ref={bannerRef2} 
-                unitId={adUnitId2} 
-                size={BannerAdSize.LARGE_BANNER}
+            <View style={{...themed($instructionImgView), maxHeight: screenWidth*0.9}}>
+              <Image
+                source={diaryInstruction}
+                style={{width : '100%', height : '100%'}}
               />
             </View>
+            <Text style={themed($instructionNormalText)}>
+              <Trans
+                i18nKey="todayWScreen:instruction1"
+                components={{
+                  bold: <Text style={themed($instructionBoldText)} />,
+                }}
+              />
+            </Text>
+            <View style={{...themed($instructionImgView), maxHeight: screenWidth*0.9}}>
+              <Image
+                source={diaryInstruction2}
+                style={{width : '100%', height : '100%',}}
+              />
+            </View>
+            <Text style={themed($instructionNormalText)}>
+              <Trans
+                i18nKey="todayWScreen:instruction2"
+                components={{
+                  bold: <Text style={themed($instructionBoldText)} />,
+                }}
+              />
+            </Text>
+            <View style={{...themed($instructionImgView), maxHeight: screenWidth*0.9}}>
+              <Image
+                source={diaryInstruction3}
+                style={{width : '100%', height : '100%'}}
+              />
+            </View>
+            <Text style={themed($instructionNormalText)}>
+              <Trans
+                i18nKey="todayWScreen:instruction3"
+                components={{
+                  bold: <Text style={themed($instructionBoldText)} />,
+                }}
+              />
+            </Text>
           </CardView>
         </View>
       </ScrollView></MotiView>
+
+      <SelfAssessmentModal
+        visible={myStatusStore.needSelfCheck && myStatusStore.todayProcess}
+      />
     </Screen>
   )
 })
 
 const $container: ThemedStyle<ViewStyle> = ({ colors }) => ({
   flex: 1,
-  backgroundColor: colors.palette.neutral150,
+  backgroundColor: colors.tabBackground,
 })
 
 const $header: ThemedStyle<ViewStyle> = ({ colors }) => ({
@@ -278,25 +349,28 @@ const $statusBtn : ThemedStyle<ViewStyle> = ({spacing}) => ({
 })
 
 const $cardView : ThemedStyle<ViewStyle> = ({spacing}) => ({
-  paddingLeft : spacing.md,
-  paddingRight : spacing.md,
+  paddingLeft : spacing.xs,
+  paddingRight : spacing.xs,
 })
 
 const $todayAnswerText: ThemedStyle<TextStyle> = ({ spacing }) => ({
-  marginBottom : spacing.xxl,
+  marginBottom : spacing.xxxl,
   fontSize : spacing.md,
   lineHeight : spacing.lg,
   marginLeft : spacing.sm,
+})
+
+const $todayQuestionText: ThemedStyle<TextStyle> = ({ spacing }) => ({
+  marginBottom : spacing.md,
+  fontSize : spacing.md,
+  lineHeight : spacing.lg,
+  marginLeft : spacing.xs,
 })
 
 const $adContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginTop : spacing.xs,
   marginBottom : spacing.xxl,
   alignItems : 'center',
-})
-
-const $inActiveTextField: ThemedStyle<ViewStyle> = ({}) => ({
-  minHeight : 0,
 })
 
 const $alarmBoxLeft: ThemedStyle<ViewStyle> = ({ spacing }) => ({
@@ -333,12 +407,43 @@ const $todayTimezoneText: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
 
 const $todayShareCheckMargin: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   marginTop : spacing.sm,
-  marginBottom : spacing.xxxl,
 })
 
 const $todayAnswerTextQ3: ThemedStyle<TextStyle> = ({ spacing }) => ({
-  marginTop : spacing.xs,
-  marginBottom : spacing.xxl,
+  marginTop : spacing.xxxs,
+  marginBottom : spacing.xs,
   fontSize : spacing.md,
   lineHeight : spacing.lg,
+  marginLeft : spacing.sm,
 })
+
+const $instructionTitle: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+  marginTop : spacing.xxxl*2,
+  marginBottom : spacing.sm,
+})
+
+const $instructionImgView: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+  width : '100%',
+})
+
+const $instructionNormalText: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+  marginBottom : spacing.xxxl,
+})
+
+const $instructionBoldText: ThemedStyle<TextStyle> = ({ colors }) => ({
+  fontWeight : 'bold',
+  color : colors.palette.delight100,
+})
+
+const $nextTimeComment: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+  marginTop : spacing.xl,
+})
+
+const $currentTodoComment: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+  marginTop : spacing.xl,
+})
+
+const $nextAlarmBoldText: ThemedStyle<TextStyle> = ({ colors }) => ({
+  fontWeight : 'bold',
+})
+

@@ -21,6 +21,13 @@ const ja: Translations = {
     doIt : "実行せよ！",
     errorHappened : "エラーが発生しました",
     tryAgain : "もう一度お試しください。",
+    Sun: "일", //바꿔라바꿔라
+    Mon: "월",
+    Tue: "화",
+    Wed: "수",
+    Thu: "목",
+    Fri: "금",
+    Sat: "토", //바꿔라바꿔라
   },
   tabs: {
     notifeeNextAlarm: "次のスマホ再利用時間は：",
@@ -48,10 +55,14 @@ const ja: Translations = {
     yourNickname : "2. ニックネーム（あだ名）",
     yourAlarmAllow : "1. 通知の許可",
     explainAlarmAllow : "日記の通知を受け取るには、デバイスの通知設定を許可してください。未許可の場合、一部の機能が制限されます。",
+    yourGoogleAds : "3. 광고 개인 맞춤화 선택", // 바꿔바꿔
+    explainGoogleAds : "DDDdiary는 앱 유지비용을 광고로 충당합니다.\n개인 맞춤형 광고 동의 시, 광고 제공업체(구글 Admob사)가 사용자의 이력을 추적하여 개인에 최적화된 광고를 제공합니다.\n거부 시 추적되지 않으며, 일반 무작위 광고가 제공됩니다.", // 바꿔바꿔
     okBtn : "了解。\n(Got it.)",
     yourLanguage : "現在の言語設定：",
     needYourNickname : "ニックネームの設定：",
     askNickname : "ニックネーム（あだ名）を入力してください。",
+    setDailyAlarm : "일일 알람 설정", // 바꿔바꿔
+    explainDailyAlarm : "매일 일기 작성을 상기시켜주는 알람을 설정해보세요.(선택사항)", // 바꿔바꿔
     letsJoin : "さあ、始めよう！",
     welcomeJoin1 : "依存脱出チャレンジへようこそ！",
     welcomeJoin2 : "今日の日記を書いてみましょう。",
@@ -62,7 +73,7 @@ const ja: Translations = {
   todayWScreen: {
     todayStart:"開始",
     needWarningCheck : "注意事項の確認が必要です",
-    explainWarningCheck : "項目6の注意事項を読んで『確認』を押してください。",
+    explainWarningCheck : "項目4の注意事項を読んで『確認』を押してください。",
     needWait12 : "おおっ、情熱的ですね！でも…",
     explainWait12 : "日付が変わったため、10秒間日記の保存ができません。少々お待ちください！",
     writing : " 記入中…",
@@ -80,6 +91,7 @@ const ja: Translations = {
     explainAlarm : "[案内]\n1. スマホを再使用する目標時間を決めてアラームを設定しましょう。\n2. 最大7件までアラーム設定が可能です。\n3. マナーモードではアラーム音が鳴りません。",
     addAlarmBtn : "アラーム追加",
     reuseAlarmBtn : "前回のアラームを再使用",
+    explainPreAlarmUse : "과거 일기에 사용했던 알람들 중 하나를 선택하세요.", // 바꿔바꿔
     reUseComment : "[案内]\nアラーム再使用不可：過去2週間以内に使用されたアラームがありません。",
     warnMaxAlarm : "アラーム設定失敗",
     explainMaxAlarm : "アラームは最大7個まで設定可能です。",
@@ -89,10 +101,11 @@ const ja: Translations = {
     placeholderQ3 : "例）昨日撮った写真を共有、父に電話、株注文",
     qCaution : "6. 開始前の注意事項:",
     Caution : 
-      "1. 日記（依存脱出）中に電話や大事な連絡を逃さないよう注意してください。\n\n2. スマホを使わないことで発生する損害（重要な通知・情報を見逃すなど）に対して、アプリおよび開発者は責任を負いません。\n\n3. このアプリはスマホ依存に対する専門的・医学的な治療手段ではなく、治療効果を保証するものではありません。\n\n4. アラームを受け取るにはネット接続と、デバイスの通知設定を許可してください。\n\n5. アラームは正確でない場合があります。\n- ネットワークの状態やOSポリシーの影響で受信できない場合があります。\n- 正確な通知を希望する場合、端末の標準アラームアプリをご利用ください。",
+      "1. 日記（中毒脱出）を進める際、電話や重要な連絡を見逃さないようご注意ください。\n\n2. スマートフォンを使用しないことで生じる損害について、アプリおよび制作者は責任を負いません。\n\n3. 再利用アラームを受け取るには、アプリの通知を許可してください。",
     cautionOk : " 上記の注意事項を読み、確認しました。",
     allowAlarm : "デバイスの通知設定を開く",
-    todayQ:"5. 今日の問い:",
+    noOver500 : '오늘의 물음을 500자 초과하여 작성할 수 없습니다.',
+    nowTextLength : "현재 글자 수: ",
   },
   todayRScreen: {
     todayModify: "修正",
@@ -109,16 +122,15 @@ const ja: Translations = {
     timeZone: "アラーム時間の基準となる地域（タイムゾーン）：",
     explainZoneChange: "[注意] 現在移動中ですか？\nアラームの基準地域と現在地のタイムゾーンが異なります。\n（時差の可能性あり）\n現在地のタイムゾーン基準でアラームを変更したい場合は、日記を修正して再スタートしてください。",
     explainQ3R: "[案内]\n再使用アラーム時間の前にスマホの用事を思い出したら、ここに書いておいて、再使用時間にまとめて処理しましょう！",
+    noMoreAlarm : "오늘 완료! 설정된 다음 알람이 없습니다.", // 바꿔바꿔
+    noMoreActions : "작성한 내용이 없습니다.\n(잠금화면에서 답장하신 내용이 없어요!)", //바꿔바꿔
   },
   pastScreen: {
     bigTitle: "の\nスマホ依存脱出記",
-    explainScreenTime : "現在のスマホ使用時間を確認しましょう: ",
-    screenTimeLink : "移動",
-    explainLinkFailAnd1 : "スクリーンタイムアプリの起動に失敗しました。",
-    explainLinkFailAnd2 : "端末の「デジタルウェルビーイング」アプリで確認してください。",
-    explainLinkFailIos1 : "スクリーンタイムアプリの起動に失敗しました。",
-    explainLinkFailIos2 : "端末の「スクリーンタイム」設定で確認してください。",
-    explain2Weeks: "[案内]\n 1. 記入から2週間経過した過去の日記は自動で削除されます。\n 2. アプリを削除すると保存された日記や友達情報もすべて削除されます。\n3. 日記を書くのを忘れていませんか？設定タブで「毎日のアラーム」を設定してください！",
+    pastScreenTime : "하루 평균 스마트폰 사용시간(과거 7주)", // 바꿔바꿔
+    weeks: "주차(Weeks)",
+    pastDDScore: "디지털 디톡스 점수(과거 7주)", // 바꿔바꿔
+    explain2Weeks: "記入から2週間経過した過去の日記は自動で削除されます。",
     toTheList: "一覧へ戻る",
     deleteDiary: "日記を削除する",
     explainDelete: "削除された日記は復元できません。"
@@ -236,6 +248,10 @@ const ja: Translations = {
     processNo: " 未進行",
     noAlarms: "アラーム時間：？",
     yesAlarms: "アラーム時間：",
+    todayQAnswer : "오늘의 물음 답변:", //바꿔바꿔
+    favoriteYesBtn : "즐겨찾기됨", // 바꿔바꿔
+    favoriteNoBtn : "즐겨찾기",
+    BanBtn : "삭제", //바꿔바꿔
     explainFriendLimit: "[案内] 友達は最大20人まで追加可能です。\n現在の友達数：",
     explainModify: "\n入力ミスにご注意：ニックネームまたはコードを間違えると、友達追加はできますが状態は共有されません！",
     myRandomId: "自分の秘密コード",
@@ -285,6 +301,32 @@ const ja: Translations = {
     invalidFFRequest1 : "エラーが発生しました。",
     invalidFFRequest2 : "この問題が続く場合は、アプリを再起動するか、ニックネームを変更（リセット）してください。",
   },
+  selfCheckModal: { // 바꿔바꿔
+    todayStart: "일기 시작",
+    needCorrectTime: "올바른 양식(시간, 분)을 입력 해주세요.",
+    selfCheckTitle: "자가평가",
+    askScreenTime: "지난 주 스마트폰 사용 시간을 입력해주세요.",
+    explainIosScreen1: "시간 확인 방법:\n1. 기기 '설정' 앱",
+    explainIosScreen2: "에서 '스크린타임' 메뉴",
+    explainIosScreen3: "로 이동해주세요.",
+    explainIosScreen4: "2. 지난 주 하루 평균 스크린타임 시간을 아래에 입력해주세요.",
+    explainAndScreen1: "시간 확인 방법:\n1. 기기 '설정' 앱",
+    explainAndScreen2: "에서 '디지털 웰빙' 메뉴",
+    explainAndScreen3: "로 이동해주세요.",
+    explainAndScreen4: "2. 지난 주 하루 평균 웰빙웰빙웰빙 시간을 아래에 입력해주세요.", // 이게 대체 뭐라고 부르냐..
+    goToSetting : "설정으로 이동하기", // 바꿔바꿔
+    time: "시간",
+    minute: "분",
+    save: "저장",
+    from: " 부터", // 쓰기
+    to: " 까지", //띄어
+    askHowManyTimes: "스마트폰을 총 몇 번 사용하셨나요?\n(화면잠금 해제 기준)",
+    timesMore4: "4회 이상",
+    times2or3: "2~3회",
+    times1: "1회",
+    times0: "0회",
+    skip: "평가 미응답(skip)",
+  }, // 모든걸 다바꿔
   errorScreen: {
     title: "あっ..! 何かがうまくいきませんでしたㅠ.ㅠ",
     friendlySubtitle: "この画面はエラーが発生したときに表示されます。アプリのホーム画面に移動します。エラーは早急に修正できるよう対応いたします。ご不便をおかけして申し訳ありません。",
@@ -304,7 +346,7 @@ const ja: Translations = {
     },
     friends: {
       heading: "まだ追加された友達がいません。",
-      content: "新しい友達を登録してお互いの状態を共有しましょう！\n共有される情報：今日の依存脱出の進行状況、アラーム時間\n（日記の内容は共有されません。）"
+      content: "新しい友達を追加して、お互いの状態を共有しよう！"
     }
   },
 
