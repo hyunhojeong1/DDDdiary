@@ -1,8 +1,8 @@
-import { Button, CardView, Checkbox, Header, ListItem, Text, TextField } from "@/components";
+import { Button, CardView, Checkbox, Header, ListItem, Text, TextField, } from "@/components";
 import { spacing, ThemedStyle } from "@/theme";
 import { useAppTheme } from "@/utils/useAppTheme";
-import { ActivityIndicator, Alert, Dimensions, Image, Linking, Modal, Platform, ScrollView, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
-import { useEffect, useState } from "react";
+import { ActivityIndicator, Alert, Dimensions, Image, Linking, Modal, Platform, ScrollView, TextInput, TextStyle, TouchableOpacity, View, ViewStyle } from "react-native";
+import { useEffect, useRef, useState } from "react";
 import { useStores } from "@/models";
 import { observer } from "mobx-react-lite";
 import { Trans, useTranslation } from "react-i18next";
@@ -22,6 +22,7 @@ const diaryInstruction = require("../../../../assets/images/diary_instruction1.p
 const diaryInstruction2 = require("../../../../assets/images/diary_instruction2.png");
 const diaryInstruction3 = require("../../../../assets/images/diary_instruction3.png");
 
+
 export default observer(function TodayWrite() {
   const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"]);
   const { theme, themed } = useAppTheme();
@@ -30,6 +31,8 @@ export default observer(function TodayWrite() {
   const screenWidth = Dimensions.get('window').width;
   const [isRefreshed, setIsRefreshed] = useState(true);
   const [isSaved, setIsSaved] = useState(true);
+  const cautionRef = useRef<TextInput>(null);
+  const scrollRef = useRef<ScrollView>(null);
 
   //일기내용
   const [text1, setText1] = useState<string>("");
@@ -90,7 +93,15 @@ export default observer(function TodayWrite() {
     setIsSaved(false);
     if(!cautionCheck) {
       setIsSaved(true);
-      Alert.alert(t('todayWScreen:needWarningCheck'), t('todayWScreen:explainWarningCheck'));
+      Alert.alert(
+        t('todayWScreen:needWarningCheck'), 
+        t('todayWScreen:explainWarningCheck'),
+        [
+          { text: t('common:ok'), onPress: () => {
+            handleScrollTo();
+            return;
+          }},
+      ]);
       return;
     }
     if(banForRefresh()) {
@@ -285,6 +296,14 @@ export default observer(function TodayWrite() {
       return;
     }
   }
+
+  const handleScrollTo = () => {
+    cautionRef.current?.measureLayout(
+      scrollRef.current!.getScrollableNode(),
+      (x, y) => {
+        scrollRef.current?.scrollTo({y: y, animated : true})
+      },
+  )};
   
   return (
     <View
@@ -318,7 +337,7 @@ export default observer(function TodayWrite() {
         animate={{ opacity: 1, translateY: 0 }}
         transition={{ type: "timing", duration: 500 }}
         style={{ flex: 1 }}
-      ><ScrollView>
+      ><ScrollView ref={scrollRef}>
         <View>
           <Button 
             preset='default'
@@ -455,6 +474,7 @@ export default observer(function TodayWrite() {
             />
             <TextField
               readOnly
+              ref={cautionRef}
               scrollEnabled={false}
               containerStyle={themed($inactiveTextField)}
               multiline={true}

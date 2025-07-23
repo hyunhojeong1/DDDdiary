@@ -213,7 +213,7 @@ export default function appStarting() {
                   style={themed($welcomeHeader)}
                 />
                 {initialLang !== "en" ? 
-                  <Text text={"Hello!"} /> : null }
+                  <Text text={"(Hello!)"} /> : null }
                 {!theme.isDark ? 
                   <View style={{maxHeight: screenWidth*0.75}}>
                     <Image
@@ -235,7 +235,7 @@ export default function appStarting() {
                 />
                 {initialLang !== "en" ? 
                   <Text 
-                    text={"(We only need 2 pieces of information from you.)"} // 바꿔바꿔
+                    text={"(Initial setup is required to use DDDdiary.)"}
                     style={themed($smallText)}
                   /> 
                 : null }
@@ -274,7 +274,7 @@ export default function appStarting() {
                       style={themed($listHeader)}
                     />
                     <Text 
-                      text="Choice for Personalized Ads" // 바꿔바꿔
+                      text="Ads setting"
                       style={themed($smallText)}
                     />
                     <Text
