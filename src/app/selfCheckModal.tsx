@@ -1,4 +1,4 @@
-import { Icon, Text, TextField } from '@/components';
+import { Text, TextField } from '@/components';
 import { useStores } from '@/models';
 import { useAppTheme } from '@/utils/useAppTheme';
 import React, { useEffect, useState } from 'react';
@@ -165,8 +165,8 @@ export default observer(function SelfAssessmentModal({visible} : SelfAssessmentM
 											style={themed($goSettingText)}
 											onPress={()=> {
 												Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light); 
-												Linking.openURL("app-settings");
-											}} // 이거 맞는지 체크 필수
+												Linking.openURL('App-prefs:root');
+											}}
 										/>
 										<Text 
 											tx='selfCheckModal:explainIosScreen4'
@@ -405,7 +405,7 @@ const $container: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
 	padding: spacing.xxxs,
 })
 
-const $title: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+const $title: ThemedStyle<TextStyle> = ({ spacing }) => ({
 	fontSize: spacing.lg,
 	lineHeight : spacing.xl,
 	fontWeight: 'bold',
@@ -413,7 +413,7 @@ const $title: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
 	textAlign: 'center',
 })
 
-const $askScreenTime: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+const $askScreenTime: ThemedStyle<TextStyle> = ({ spacing }) => ({
 	fontSize : spacing.md,
 	marginTop : spacing.lg,
 	textAlign : 'center',
@@ -424,7 +424,7 @@ const $goSettingText: ThemedStyle<TextStyle> = ({ colors }) => ({
 	textDecorationLine : 'underline',
 })
 
-const $screenTimeFrame: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+const $screenTimeFrame: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 	flexDirection : 'row',
 	alignItems : 'center',
 	justifyContent : 'center',
@@ -437,7 +437,7 @@ const $screenTimeInput: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
 	backgroundColor : colors.tabBackground,
 })
 
-const $screenTimeLabel: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+const $screenTimeLabel: ThemedStyle<TextStyle> = ({ spacing }) => ({
 	fontSize: spacing.md,
 	marginHorizontal : spacing.xxxs,
 	textAlign : 'center',
@@ -460,14 +460,14 @@ const $typeErrorText: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
 	fontSize : spacing.md,
 })
 
-const $alarmTimeContainer: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
+const $alarmTimeContainer: ThemedStyle<ViewStyle> = ({ spacing }) => ({
 	minHeight : 250,
 	alignItems : 'center', 
 	justifyContent :'center', 
 	marginVertical : spacing.xs,
 })
 
-const $alarmTimeText: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+const $alarmTimeText: ThemedStyle<TextStyle> = ({ spacing }) => ({
 	fontWeight : 'bold',
 	fontSize : spacing.lg,
 	lineHeight : spacing.xxl,
@@ -491,13 +491,13 @@ const $selectCardLastOne: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
 	marginBottom : spacing.xxxl*2,
 })
 
-const $cardLayout: ThemedStyle<ViewStyle> = ({ colors }) => ({
+const $cardLayout: ThemedStyle<ViewStyle> = ({}) => ({
 	flexDirection: 'row',
 	alignItems: 'center',
 	justifyContent: 'space-between',
 })
 
-const $cardLabelText: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+const $cardLabelText: ThemedStyle<TextStyle> = ({ spacing }) => ({
 	fontSize: spacing.md,
 	lineHeight : spacing.xl,
 	fontWeight : 'bold',

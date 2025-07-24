@@ -12,7 +12,7 @@ import * as Haptics from 'expo-haptics';
 import { checkInternetConnection } from "@/utils/network";
 import SelfAssessmentModal from "../selfCheckModal";
 import Feather from '@expo/vector-icons/Feather';
-import { Menu, Divider } from 'react-native-paper';
+import { Menu } from 'react-native-paper';
 
 
 const adUnitId_Test = TestIds.BANNER;

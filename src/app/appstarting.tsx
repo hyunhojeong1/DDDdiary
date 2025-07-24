@@ -55,10 +55,8 @@ export default function appStarting() {
   },[]);
 
   const checkIFEEA = async () => {
-    AdsConsent.reset();
-    const info = await AdsConsent.requestInfoUpdate({debugGeography: AdsConsentDebugGeography.EEA}); // 바꾸거라.. 리셋도 없애거라...
+    const info = await AdsConsent.requestInfoUpdate();
     const isInEEA = info.status;
-    console.log(isInEEA);
     if(isInEEA === "REQUIRED" || isInEEA === "UNKNOWN") {
       setIsEEA(true);
     }
@@ -230,7 +228,7 @@ export default function appStarting() {
                 }
                 <Text
                   tx="appStartScreen:needYourInfo"
-                  preset="formLabel"
+                  preset="default"
                   style={{marginTop : spacing.sm}}
                 />
                 {initialLang !== "en" ? 
@@ -296,7 +294,7 @@ export default function appStarting() {
                   <View style={{height : screenWidth*0.62 + spacing.md*2, marginTop : spacing.lg}}>
                   <Text
                     tx="appStartScreen:dontWorry"
-                    style={{width : '90%', marginLeft : spacing.sm, fontSize : spacing.sm, lineHeight : spacing.md}}
+                    style={{width : '90%', marginLeft : spacing.sm, fontSize : spacing.md, lineHeight : spacing.lg}}
                   />
                     <Image
                       source={ddddiaryChar2}
@@ -306,7 +304,7 @@ export default function appStarting() {
                 : <View style={{height : screenWidth*0.62 + spacing.md*2, marginTop : spacing.lg}}>
                   <Text
                     tx="appStartScreen:dontWorry"
-                    style={{width : '90%', marginLeft : spacing.sm, fontSize : spacing.sm, lineHeight : spacing.md}}
+                    style={{width : '90%', marginLeft : spacing.sm, fontSize : spacing.md, lineHeight : spacing.lg}}
                   />
                     <Image
                       source={ddddiaryChar2Dark}
@@ -495,7 +493,6 @@ export default function appStarting() {
 const $container: ThemedStyle<ViewStyle> = ({ colors }) => ({
   flex: 1,
   backgroundColor: colors.tabBackground,
-  // borderTopWidth : 1,
   borderColor : colors.separator,
 })
 

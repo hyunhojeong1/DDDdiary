@@ -13,12 +13,15 @@ import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import notifee, {AndroidImportance} from '@notifee/react-native';
 import { changeTimetoNumber } from '@/utils/changeTimes';
-import MobileAds, { AdsConsent, AdsConsentDebugGeography, MaxAdContentRating } from 'react-native-google-mobile-ads';
+import MobileAds, { AdsConsent, MaxAdContentRating } from 'react-native-google-mobile-ads';
 import { getCrashlytics, log, recordError } from '@react-native-firebase/crashlytics';
 import { getTrackingPermissionsAsync, PermissionStatus, requestTrackingPermissionsAsync } from 'expo-tracking-transparency';
 
+
+
 let isListenerRegistered = false;
 const messaging = getMessaging();
+
 
 export default function TabLayout() {
   const {themed} = useAppTheme();
@@ -31,26 +34,22 @@ export default function TabLayout() {
   const isMobileAdsStartCalledRef = useRef(false);
 
   useEffect(()=>{
-    console.log("최초 회원가입 이후 리랜더링이 발생하나요? 그러겠죠..? ios에서도 확인..1111");
     fetchStatus();
     lastRefreshDateRef.current = getCurrentDate().fulldate;
     myStatusStore.setProp("somethingChanged", false);
-    console.log("현재 저장 현황: ", myStatusStore.selfCheckScore7Weeks, myStatusStore.selfCheckScoreWeek, myStatusStore.screenTime7Weeks, myStatusStore.androidYesFNAT);
+    // console.log("현재 저장 현황: ", myStatusStore.selfCheckScore7Weeks, myStatusStore.selfCheckScoreWeek, myStatusStore.screenTime7Weeks, myStatusStore.androidYesFNAT);
   },[]);
 
   const fetchStatus = async () => {
     const idCheck = await myStatusStore.fetchMystatus();
     if(idCheck) {
-      console.log("확인 : 얘는 앱 최초 시작만 되는거고, 이후 bg 전환간에는 발생하지 않지?? - ios 확인");
       i18n.changeLanguage(myStatusStore.userCLang);
       SplashScreen.hideAsync();
       myStatusStore.resetInitialReady();
       handleGetFCMToken(); // 가입화면 토큰 발급 실패 시 백업
-      handleNotifee(); // 최초 가입 후 리랜더 발생 확인해서 여기 위치시켜둠.
-      handleAddingTask(); // 앱 종료 후 시작 시 bg리스너가 동작하지 않음. 필요
-      handleSelfCheck(); // 앱 종료 후 시작 시 bg리스너가 동작하지 않음. 필요
-      // myStatusStore.setProp("needSelfCheck", true); // 지워라
-      // myStatusStore.setProp("needScreenTime", true); // 지워라
+      handleNotifee();
+      handleAddingTask(); // 앱 종료 후 시작 시 bg리스너가 동작하지 않음. 여기 필요
+      handleSelfCheck();
       return;
     } else {
       router.push('/appstarting');
@@ -90,8 +89,7 @@ export default function TabLayout() {
   };
 
   useEffect(()=>{
-    if(isListenerRegistered || myStatusStore.randomId === "") return; // 최초가입시 돌려보내기 추가
-    console.log("이제 최초 가입시엔 안될 것이야. 맞지?1111");
+    if(isListenerRegistered || myStatusStore.randomId === "") return; // 최초가입시 돌려보내기
     isListenerRegistered = true;
     const subscription = AppState.addEventListener("change", (state)=>{
       if(state === "active") {
@@ -114,7 +112,6 @@ export default function TabLayout() {
       lastRefreshDateRef.current = today;
       myStatusStore.setRefresh();
     } else {
-      console.log("앱이 종료됐다가 재시작 하는 것도 active 상태로 잡히는가??- 안 잡힌다.");
       handleAddingTask();
       handleSelfCheck();
     }
@@ -172,12 +169,9 @@ export default function TabLayout() {
     }
   };
 
-  // 구글 광고 동의는 회원가입 이후 발생
   useEffect(() => {
-    if(myStatusStore.randomId === "") return; // 최초가입시 돌려보내기 추가. ios에서도 동작 확인할 것.
-    console.log("이제 최초 가입시엔 안될 것이야. 맞지?2222");
-    // AdsConsent.reset();
-    AdsConsent.gatherConsent({debugGeography: AdsConsentDebugGeography.EEA})
+    if(myStatusStore.randomId === "") return; // 최초가입시 돌려보내기
+    AdsConsent.gatherConsent()
       .then(startGoogleMobileAdsSDK)
       .catch((error) => {
           const crashlytics = getCrashlytics();

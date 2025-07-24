@@ -86,8 +86,8 @@ export default observer(function TodayWrite() {
       Alert.alert(t('appStartScreen:warnNoInternet1'), t('appStartScreen:warnNoInternet2'));
       return;
     }
-    if(text2.length > 5) {
-      Alert.alert(t('todayWScreen:noOver500'), `${t('todayWScreen:nowTextLength')}${text2.length}`);  // 고쳐라 고쳐라
+    if(text2.length > 500) {
+      Alert.alert(t('todayWScreen:noOver500'), `${t('todayWScreen:nowTextLength')}${text2.length}`);
       return;
     }
     setIsSaved(false);
@@ -253,8 +253,8 @@ export default observer(function TodayWrite() {
         Alert.alert(t('appStartScreen:warnNoInternet1'), t('appStartScreen:warnNoInternet2'));
         return;
       }
-      if(text2.length > 5) { // 고쳐럽 고쳐럽
-        Alert.alert(t('todayWScreen:noOver500'), `${t('todayWScreen:nowTextLength')}${text2.length}`);  // 고쳐라 고쳐라
+      if(text2.length > 500) {
+        Alert.alert(t('todayWScreen:noOver500'), `${t('todayWScreen:nowTextLength')}${text2.length}`);
         return;
       }
       setIsSaved(false);
@@ -814,16 +814,16 @@ const $pickerText: ThemedStyle<TextStyle> = ({ colors }) => ({
   color : colors.palette.neutral900,
 })
 
-const $instructionTitle: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+const $instructionTitle: ThemedStyle<TextStyle> = ({ spacing }) => ({
   marginTop : spacing.xxxl*2,
   marginBottom : spacing.sm,
 })
 
-const $instructionImgView: ThemedStyle<ViewStyle> = ({ spacing }) => ({
+const $instructionImgView: ThemedStyle<ViewStyle> = ({}) => ({
   width : '100%',
 })
 
-const $instructionNormalText: ThemedStyle<TextStyle> = ({ colors }) => ({
+const $instructionNormalText: ThemedStyle<TextStyle> = ({}) => ({
   marginBottom : spacing.xxxl,
 })
 

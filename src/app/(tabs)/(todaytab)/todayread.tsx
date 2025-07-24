@@ -417,7 +417,7 @@ const $todayAnswerTextQ3: ThemedStyle<TextStyle> = ({ spacing }) => ({
   marginLeft : spacing.sm,
 })
 
-const $instructionTitle: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+const $instructionTitle: ThemedStyle<TextStyle> = ({ spacing }) => ({
   marginTop : spacing.xxxl*2,
   marginBottom : spacing.sm,
 })
@@ -426,7 +426,7 @@ const $instructionImgView: ThemedStyle<ViewStyle> = ({ spacing }) => ({
   width : '100%',
 })
 
-const $instructionNormalText: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+const $instructionNormalText: ThemedStyle<TextStyle> = ({ spacing }) => ({
   marginBottom : spacing.xxxl,
 })
 
@@ -435,7 +435,7 @@ const $instructionBoldText: ThemedStyle<TextStyle> = ({ colors }) => ({
   color : colors.palette.delight100,
 })
 
-const $nextTimeComment: ThemedStyle<TextStyle> = ({ colors, spacing }) => ({
+const $nextTimeComment: ThemedStyle<TextStyle> = ({ spacing }) => ({
   marginTop : spacing.xl,
 })
 

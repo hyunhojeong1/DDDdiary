@@ -49,8 +49,8 @@ export const MyStatusStoreModel = types
     screenTime7Weeks : types.optional(types.array(types.number),<number[]>[0,0,0,0,0,0,0]),
     needScreenTime : false,
     lastRecordWeek : types.optional(types.number, 0),
-    fullfillCheckDate : types.optional(types.number, 0), // 날짜 바뀔 시 해당 날짜로 변경. 초기 100점 주기용. 0으로 바꾸지 말라.
-    fullfillCheckAlarms : 0, //백그라운드 상태될 때 남은 알람 수 카운트
+    fullfillCheckDate : types.optional(types.number, 0), // 0으로 바꾸는 식으로 쓰면 안 됨.
+    fullfillCheckAlarms : 0,
   })
   .actions(withSetPropAction)
   .actions((store) => ({
@@ -221,7 +221,7 @@ export const MyStatusStoreModel = types
           store.setProp("todayAlarmLastTopic", [...needReserveTopics, ...newAddTopics]);
           store.setProp("androidYesFNAT", true);
 
-          if(store.todayNDate !== store.fullfillCheckDate) { // 어제 정산 감점, 초기 100점, numalarm length가 0이면 초기 70점, 일기 취소시 lastself가 ""이면 50점 감점
+          if(store.todayNDate !== store.fullfillCheckDate) {
             store.setProp("fullfillCheckDate", store.todayNDate); // 이후 당일엔 절대 바꿀 수 없다.
             store.setProp("fetchedNextAlarm", "");
             store.setProp("lastSelfCheckTime", ""); // 필수로 if문 안쪽(점수 정확성)
@@ -273,8 +273,7 @@ export const MyStatusStoreModel = types
             store.unModelOneDiary(diaryNDate);
             store.setProp("todayAlarmLastTopic", []);
             store.setProp("androidYesFNAT" , false);
-            store.setProp("fullfillCheckAlarms", 0); // 폰해방이 비로소 의미를 갖게 되었다. 추가감점요소 제거
-            // store.setProp("fullfillCheckDate", 0); 이거 취소 시작마다 100점씩 계속 줄 일 있냐? 정신차려!
+            store.setProp("fullfillCheckAlarms", 0);
 
             let nowScore = store.selfCheckScoreWeek;
             if (store.lastSelfCheckTime === "") {
@@ -459,7 +458,7 @@ export const MyStatusStoreModel = types
         recordError(crashlytics, e as Error);
       }
     },
-    async modelAndSaveOneDiary(fulldate : number, contents : object) { // 일기 수정 저장오류 개선
+    async modelAndSaveOneDiary(fulldate : number, contents : object) {
       store.myDiaries.set(fulldate.toString(), contents);
       await save("myStatus", store);
     },
@@ -521,7 +520,7 @@ export const MyStatusStoreModel = types
       if (response) {
         const nowAlarms = [...response.alarms];
         if (nowAlarms.length > 0) {
-          const sortedAlarms = nowAlarms.filter(alarm => changeTimetoNumber(alarm).timeNumber <= getCurrentDate().currentTimeNumber // 정확히 알람 시간이면 안 잡힌다.
+          const sortedAlarms = nowAlarms.filter(alarm => changeTimetoNumber(alarm).timeNumber <= getCurrentDate().currentTimeNumber
             && changeTimetoNumber(alarm).timeNumber >= changeTimetoNumber(store.fetchedNextAlarm).timeNumber);
 
           if(sortedAlarms.length > 0) {
@@ -536,7 +535,7 @@ export const MyStatusStoreModel = types
               const lastMondayFulldate = 10000*(lastWeekMonday.getFullYear()-2000) + 100*(lastWeekMonday.getMonth()+1) + lastWeekMonday.getDate();
               const thisMondayFulldate = 10000*(thisWeekMonday.getFullYear()-2000) + 100*(thisWeekMonday.getMonth()+1) + thisWeekMonday.getDate();
 
-              if(store.lastRecordWeek >= lastMondayFulldate) { // <= 로 바꾸기
+              if(store.lastRecordWeek <= lastMondayFulldate) {
                 store.setProp("needScreenTime", true);
                 const screen7Weeks = [...store.screenTime7Weeks];
                 const newArrScreen = screen7Weeks.slice(1);
@@ -552,7 +551,7 @@ export const MyStatusStoreModel = types
               }
             }
             let nowScore = store.selfCheckScoreWeek;
-            nowScore = nowScore - 10*sortedAlarms.length; // 일단 까고 자가참여 응답하면 10점 준다.
+            nowScore = nowScore - 10*sortedAlarms.length;
             if (nowScore < 0) {nowScore = 0;}
             store.setProp("selfCheckScoreWeek", nowScore);
             store.setProp("needSelfCheck", true);
@@ -561,9 +560,8 @@ export const MyStatusStoreModel = types
             if(sortedAlarms2.length > 0) {
               store.setProp("fetchedNextAlarm", sortedAlarms2[0]); // 중복 감점 방지 최신화
             } else if (sortedAlarms2.length === 0) {
-              store.setProp("fetchedNextAlarm", ""); // 중복 감점 방지 최신화
+              store.setProp("fetchedNextAlarm", "");
             }
-            console.log("preSelfCheck 결과: ", store.selfCheckScore7Weeks, store.selfCheckScoreWeek, store.lastRecordWeek, store.screenTime7Weeks);
             await save("myStatus", store);
           }
         }
