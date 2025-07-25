@@ -5,7 +5,7 @@ import { useAppTheme } from '@/utils/useAppTheme'
 import { SplashScreen, Tabs, useRouter } from 'expo-router'
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ViewStyle, AppState} from 'react-native';
+import { ViewStyle, AppState } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Octicons from '@expo/vector-icons/Octicons';
 import { getMessaging } from '@react-native-firebase/messaging';
@@ -30,6 +30,7 @@ export default function TabLayout() {
   const router = useRouter();
   const lastRefreshDateRef = useRef<number>(0);
 
+
   //adMob
   const isMobileAdsStartCalledRef = useRef(false);
 
@@ -50,7 +51,6 @@ export default function TabLayout() {
       handleNotifee();
       handleAddingTask(); // 앱 종료 후 시작 시 bg리스너가 동작하지 않음. 여기 필요
       handleSelfCheck();
-      return;
     } else {
       router.push('/appstarting');
       SplashScreen.hideAsync();
@@ -97,6 +97,8 @@ export default function TabLayout() {
         Notifications.setBadgeCountAsync(0);
       }
       if(state === "background") {
+        notifee.cancelDisplayedNotifications();
+        notifee.cancelAllNotifications();
         handleNextAlarmNotifee();
       }
     });
@@ -202,7 +204,8 @@ export default function TabLayout() {
       testDeviceIdentifiers : ['EMULATOR'],
     });
     MobileAds().initialize();
-  }
+  };
+
 
   return (
     <Tabs

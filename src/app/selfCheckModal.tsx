@@ -13,6 +13,7 @@ import {
 	Platform,
 	Linking,
 	Image,
+	Dimensions,
 } from 'react-native';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { spacing, ThemedStyle } from '@/theme';
@@ -36,6 +37,7 @@ export default observer(function SelfAssessmentModal({visible} : SelfAssessmentM
 	const { theme, themed } = useAppTheme();
 	const { myStatusStore } = useStores();
 	const {t} = useTranslation();
+	const screenHeight = Dimensions.get('window').height;
 
 	// 스크린타임
   const [hours, setHours] = useState('');
@@ -137,7 +139,7 @@ export default observer(function SelfAssessmentModal({visible} : SelfAssessmentM
   return (
     <Modal visible={visible} transparent animationType="fade">
       <View style={themed($overlay)}>
-        <View style={themed($container)}>
+        <View style={[themed($container), {height : screenHeight*0.85}]}>
 					<ScrollView style={{padding : 10,}}>
 						<Text 
 							style={themed($title)}
@@ -399,7 +401,6 @@ const $overlay: ThemedStyle<ViewStyle> = ({ colors }) => ({
 
 const $container: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
 	width: '95%',
-	height: '85%',
 	backgroundColor: colors.tabBackground,
 	borderRadius: spacing.md,
 	padding: spacing.xxxs,

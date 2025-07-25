@@ -90,7 +90,7 @@ export default observer(function PastDiary() {
     if(sortedArray.length > 0) {setMaxScreenTime(sortedArray[0]);}
     const sortedArray2 = newArr2.sort((a,b)=>(b-a));
     if(sortedArray2.length > 0) {setMaxSelfCheckScore(sortedArray2[0]);}
-  },[]);
+  },[myStatusStore.needSelfCheck]);
 
   
   useEffect(()=>{

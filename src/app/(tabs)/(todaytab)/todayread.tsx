@@ -1,8 +1,8 @@
 import { Button, CardView, Checkbox, Header, ListItem, Screen, Text, TextField } from "@/components";
 import { ThemedStyle } from "@/theme";
 import { useAppTheme } from "@/utils/useAppTheme";
-import { ActivityIndicator, Alert, Dimensions, Image, Platform, ScrollView, TextStyle, View, ViewStyle } from "react-native";
-import { useRef, useState } from "react";
+import { ActivityIndicator, Alert, AppRegistry, Dimensions, Image, Platform, ScrollView, TextStyle, View, ViewStyle } from "react-native";
+import { useEffect, useRef, useState } from "react";
 import { useStores } from "@/models";
 import { observer } from "mobx-react-lite";
 import { Trans, useTranslation } from "react-i18next";
@@ -14,6 +14,8 @@ import { checkInternetConnection } from "@/utils/network";
 import SelfAssessmentModal from "@/app/selfCheckModal";
 import { changeTimetoNumber } from "@/utils/changeTimes";
 import { getCurrentDate } from "@/utils/getCurrentDate";
+import notifee, { EventType } from '@notifee/react-native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const diaryInstruction = require("../../../../assets/images/diary_instruction1.png");
@@ -89,6 +91,124 @@ export default observer(function TodayRead() {
     await new Promise(resolve => setTimeout(resolve, 300));
     setIsRefreshed(true);
   };
+
+  const handleAddingTask = async () => {
+    if(!myStatusStore.todayProcess) {
+      await AsyncStorage.removeItem('@lockscreen_reply');
+    } else {
+      const value = await AsyncStorage.getItem('@lockscreen_reply');
+      if (value !== null && value !== "") {
+        await myStatusStore.addingReuseTimeTask(value);
+      }
+    }
+  };
+
+
+  // 앱에서 바로 잠금화면으로 간 경우, 잠금화면을 풀면 바로 fg 상태가 되는 문제 개선
+  useEffect(() => {
+    const unsubscribe = notifee.onForegroundEvent(async ({ type, detail }) => {
+      try {
+        if(!detail.pressAction) return;
+        if (type === EventType.ACTION_PRESS && detail.pressAction?.id === 'reply') {
+          if(!detail.input) return;
+          let replyText = detail.input;
+          const preReply = await AsyncStorage.getItem('@lockscreen_reply');
+          if (preReply !== null) {
+            replyText = `${preReply}\n${detail.input}`;
+          }
+          await AsyncStorage.setItem('@lockscreen_reply', replyText);
+          await handleAddingTask();
+        }
+
+      } catch (e) {
+        console.error(e);
+      }
+    });
+
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+
+// 백그라운드 알림 액션 핸들러
+// notifee.onBackgroundEvent(async ({ type, detail }) => {
+// 	const { notification, pressAction } = detail;
+
+// 	switch (type) {
+// 		case EventType.APP_BLOCKED:
+// 			break;
+// 		case EventType.CHANNEL_BLOCKED:
+// 			break;
+// 		case EventType.CHANNEL_GROUP_BLOCKED:
+// 			break;
+// 		case EventType.FG_ALREADY_EXIST:
+// 			break;
+// 		case EventType.TRIGGER_NOTIFICATION_CREATED:
+// 			break;
+// 		case EventType.UNKNOWN:
+// 			break;
+// 		case EventType.DELIVERED:
+// 			break;
+// 		case EventType.DISMISSED:
+// 			break;
+// 		case EventType.PRESS:
+// 			break;
+// 		case EventType.ACTION_PRESS:
+// 			if(!pressAction) break;
+// 			if (type === EventType.ACTION_PRESS && pressAction.id === 'reply') {
+// 				if(!detail.input) break;
+// 				if(!notification) break;
+// 				if(!notification.android) break;
+// 				if(!notification.android.actions) break;
+// 				if(notification.android.actions.length === 0) break;
+// 				if(!notification.android.actions[0].title) break;
+// 				if(!notification.android.actions[0].input) break;
+				
+// 				let replyText = detail.input;
+// 				const preReply = await AsyncStorage.getItem('@lockscreen_reply');
+// 				if (preReply !== null) {
+// 					replyText = `${preReply}\n${detail.input}`;
+// 				}
+// 				await AsyncStorage.setItem('@lockscreen_reply', replyText);
+
+// 				if(Platform.OS === "android") {
+
+// 					await notifee.displayNotification({
+// 						title: notification.title,
+// 						body: notification.body,
+// 						android: {
+// 							channelId: 'notif2NextReuse',
+// 							smallIcon: 'notification_icon',
+// 							autoCancel: true,
+// 							actions: [
+// 								{
+// 									title: notification.android.actions[0].title,
+// 									pressAction: { id: 'reply' },
+// 									input: {
+// 										allowFreeFormInput: true,
+//                     // placeholder : notification.android.actions[0].input.place
+// 									},
+// 								},
+// 							],
+// 						},
+// 					});
+// 				} else {
+// 					await notifee.displayNotification({
+// 						title: notification.title,
+// 						body: notification.body,
+// 						ios: {
+// 							categoryId: 'reply',
+// 						},
+// 					});
+// 				}
+// 			}
+// 			break;
+// 		default:
+// 			break;
+// 	}
+// });
+
 
 
   return (

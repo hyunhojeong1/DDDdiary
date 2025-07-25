@@ -157,18 +157,21 @@ export default function appStarting() {
     }
     setIsToggled(false);
     myStatusStore.setProp("somethingChanged", true);
-    const booly = await myStatusStore.toggleUserDAlarm(value);
-    if(booly) {
-      setIsToggled(true);
-      setAlarmSwitch(value); // save mystatus 안해도, nickname은 MST에 자동 저장된 상태임을 유의
-    } else {
-      setIsToggled(true);
-      handleGetFCMToken();
-      Alert.alert(t('settingScreen:invalidFFRequest1'), t('settingScreen:invalidFFRequest2'));
-    }
+    setIsToggled(true);
+    setAlarmSwitch(value); // save mystatus 안해도, nickname은 MST에 자동 저장된 상태임을 유의
+
+    // const booly = await myStatusStore.toggleUserDAlarm(value);
+    // if(booly) {
+    //   setIsToggled(true);
+    //   setAlarmSwitch(value); // save mystatus 안해도, nickname은 MST에 자동 저장된 상태임을 유의
+    // } else {
+    //   setIsToggled(true);
+    //   handleGetFCMToken();
+    //   Alert.alert(t('settingScreen:invalidFFRequest1'), t('settingScreen:invalidFFRequest2'));
+    // }
   };
 
-  const handleJoin = async ()=> {
+  const handleJoin = async (value : boolean)=> {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     const hasInternet = await checkInternetConnection();
     if(!hasInternet){
@@ -179,6 +182,7 @@ export default function appStarting() {
     try {
       const response = await myStatusStore.joinOrErrorInfo();
       if (response === "ok") {
+        await myStatusStore.toggleUserDAlarm(value);
         Alert.alert(t('appStartScreen:welcomeJoin1'),t('appStartScreen:welcomeJoin2'));
         await myStatusStore.saveMyStatus();
         setIsSaved(true);
@@ -389,7 +393,7 @@ export default function appStarting() {
             <Button 
               text={isSaved ? t("appStartScreen:letsJoin") : ""}
               LeftAccessory={()=> !isSaved ? <View><ActivityIndicator color={'white'} size={"small"} /></View> : null}
-              onPress={handleJoin}
+              onPress={()=> handleJoin(alarmSwitch)}
               style={themed($gotItBtn)}
               textStyle={{color : '#FFF'}}
             />

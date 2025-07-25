@@ -444,9 +444,9 @@ const $cardFooterContainer: ThemedStyle<TextStyle> = ({}) => ({
   width : '107%',
 })
 
-const $moreButton: ThemedStyle<ViewStyle> = ({ colors }) => ({
+const $moreButton: ThemedStyle<ViewStyle> = ({ colors, spacing }) => ({
   backgroundColor: colors.tabBackground,
-  paddingLeft : 0,
+  paddingLeft : spacing.md,
   paddingBottom : 0,
   paddingTop: 0,
   paddingRight: 0,
