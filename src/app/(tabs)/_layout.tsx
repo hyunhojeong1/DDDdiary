@@ -5,13 +5,13 @@ import { useAppTheme } from '@/utils/useAppTheme'
 import { SplashScreen, Tabs, useRouter } from 'expo-router'
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ViewStyle, AppState } from 'react-native';
+import { ViewStyle, AppState, Platform } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Octicons from '@expo/vector-icons/Octicons';
 import { getMessaging } from '@react-native-firebase/messaging';
 import * as Notifications from 'expo-notifications';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import notifee, {AndroidImportance} from '@notifee/react-native';
+import notifee, {AndroidImportance, EventType} from '@notifee/react-native';
 import { changeTimetoNumber } from '@/utils/changeTimes';
 import MobileAds, { AdsConsent, MaxAdContentRating } from 'react-native-google-mobile-ads';
 import { getCrashlytics, log, recordError } from '@react-native-firebase/crashlytics';
@@ -20,6 +20,7 @@ import { getTrackingPermissionsAsync, PermissionStatus, requestTrackingPermissio
 
 
 let isListenerRegistered = false;
+let isBGNotifeeRegistered = false;
 const messaging = getMessaging();
 
 
@@ -205,6 +206,76 @@ export default function TabLayout() {
     });
     MobileAds().initialize();
   };
+
+
+  useEffect(()=>{
+    if(isBGNotifeeRegistered) return;
+    isBGNotifeeRegistered = true;
+    
+    notifee.onBackgroundEvent(async ({ type, detail }) => {
+      const { notification, pressAction } = detail;
+
+      switch (type) {
+        case EventType.ACTION_PRESS:
+          if(!pressAction) break;
+          if (type === EventType.ACTION_PRESS && pressAction.id === 'reply') {
+            if(!detail.input) break;
+            let replyText = detail.input;
+            const preReply = await AsyncStorage.getItem('@lockscreen_reply');
+            if (preReply !== null) {
+              replyText = `${preReply}\n${detail.input}`;
+            }
+            await AsyncStorage.setItem('@lockscreen_reply', replyText);
+
+            if(Platform.OS === "android") {
+              if(!notification?.android?.actions) break;
+              if(!notification.android.actions[0].input) break;
+              let placeholderString = "";
+              if(typeof(notification.android.actions[0].input) !== "boolean") {
+                placeholderString = notification.android.actions[0].input.placeholder ?? "";
+              }
+
+              await notifee.displayNotification({
+                title: notification?.title,
+                body: notification?.body,
+                android: {
+                  channelId: 'notif2NextReuse',
+                  smallIcon: 'notification_icon',
+                  autoCancel: true,
+                  actions: [
+                    {
+                      title: notification.android.actions[0].title,
+                      pressAction: { id: 'reply' },
+                      input: {
+                        allowFreeFormInput: true,
+                        placeholder: placeholderString,
+                      },
+                    },
+                  ],
+                },
+              });
+            } else {
+              await notifee.displayNotification({
+                title: notification?.title,
+                body: notification?.body,
+                ios: {
+                  categoryId: 'reply',
+                },
+              });
+            }
+          }
+          break;
+        default:
+          break;
+      }
+    });
+
+    return () => {
+      notifee.cancelDisplayedNotifications();
+      notifee.cancelAllNotifications();
+      isBGNotifeeRegistered = false;
+    }
+  },[]);
 
 
   return (

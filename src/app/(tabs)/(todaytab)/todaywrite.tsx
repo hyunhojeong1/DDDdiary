@@ -195,26 +195,25 @@ export default observer(function TodayWrite() {
     }
   };
   
-  const handleAddAlarm = () => {
+  const handleAddAlarm = async () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    setModalVisible(false);
+    await new Promise(resolve => setTimeout(resolve, 300));
     let modifiedMinute = minute;
     if(ampm === "AM" && hour === "12" && minute === "00") {
       modifiedMinute = "15";
     }
     const newAlarm = `${hour}:${modifiedMinute} ${ampm}`;
     if (alarms.includes(newAlarm)) {
-      setModalVisible(false);
       return;
     }
     if (alarms.length >= 7 ) {
       Alert.alert(t('todayWScreen:warnMaxAlarm'), t('todayWScreen:explainMaxAlarm'));
-      setModalVisible(false);
       return;
     }
     const updatedAlarms = [...alarms, newAlarm];
     const sortedAlarms = orderAlarms(updatedAlarms);
     setAlarms(sortedAlarms);
-    setModalVisible(false);
   };
 
   const handleReuseAlarmModal = () => {
