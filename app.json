@@ -5,7 +5,7 @@
     "name": "DDDdiary",
     "slug": "DDDdiary",
     "scheme": "ddddiary",
-    "version": "1.3.1",
+    "version": "1.4.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "icon": "./assets/images/app-mainIcon-all.png",
@@ -26,7 +26,7 @@
         "backgroundColor": "#021325"
       },
       "allowBackup": false,
-      "versionCode": 7
+      "versionCode": 8
     },
     "ios": {
       "icon": "./assets/images/app-mainIcon-ios.png",
@@ -40,7 +40,7 @@
       "entitlements": {
         "aps-environment": "production"
       },
-      "buildNumber": "7"
+      "buildNumber": "8"
     },
     "web": {
       "favicon": "./assets/images/notification_icon.png",
@@ -60,6 +60,9 @@
             "useFrameworks": "static"
           },
           "android": {
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 35,
+            "buildToolsVersion": "35.0.0",
             "extraMavenRepos": ["../../node_modules/@notifee/react-native/android/libs"],
             "extraProguardRules": "-keep class com.google.android.gms.internal.consent_sdk.** { *; }"
           }

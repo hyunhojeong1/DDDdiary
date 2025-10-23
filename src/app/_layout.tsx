@@ -66,10 +66,10 @@ export default function Root() {
     const rnfbProvider = appCheck.newReactNativeFirebaseAppCheckProvider();
     rnfbProvider.configure({
       android: {
-        provider: __DEV__ ? 'debug' : 'playIntegrity'
+        provider: __DEV__ ? 'debug' : 'playIntegrity',
       },
       apple: {
-        provider: __DEV__ ? 'debug': 'appAttestWithDeviceCheckFallback'
+        provider: __DEV__ ? 'debug': 'appAttestWithDeviceCheckFallback',
       },
     });
 
